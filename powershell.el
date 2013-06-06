@@ -288,14 +288,16 @@ The function gets defined in powershell upon powershell startup."
 
 (defun powershell (&optional buffer prompt-string)
 
-  "Run an inferior PowerShell, with I/O through tne named
+  "Run an inferior PowerShell, with I/O through the named
 BUFFER (which defaults to `*PowerShell*').
 
 Interactively, a prefix arg means to prompt for BUFFER.
 
-If BUFFER exists but the shell process is not running, it makes a new shell.
+If BUFFER exists but the shell process is not running, it makes a
+new shell.
 
-If BUFFER exists and the shell process is running, just switch to BUFFER.
+If BUFFER exists and the shell process is running, just switch to
+BUFFER.
 
 If PROMPT-STRING is non-nil, sets the prompt to the given value.
 
