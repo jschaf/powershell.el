@@ -704,6 +704,7 @@ Where <fcn-name> is the name of the function to which <helper string> applies.
 (defvar powershell-mode-hook '(imenu-add-menubar-index)
   "Hook run after the initialization of Powershell mode.")
 
+;;;###autoload
 (define-derived-mode powershell-mode prog-mode "PS"
   "Major mode for editing PowerShell scripts."
   (powershell-setup-font-lock)
