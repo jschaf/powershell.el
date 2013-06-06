@@ -20,6 +20,9 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with GNU Emacs.  If not, see <http://www.gnu.org/licenses/>.
 
+
+;;; Commentary:
+
 ;;; Frédéric Perrin Comments:
 ;; This was written from scratch, without using Vivek Sharma's code:
 ;; it had issues I wanted to correct, but unfortunately there were no
@@ -41,31 +44,34 @@
 ;;            See comment below on how to generate powershell-eldoc.el
 
 ;; Variables you may want to customize.
+;;; Code:
+
 (defgroup powershell nil
   "Customization of PowerShell mode."
   :link '(custom-group-link :tag "Font Lock Faces group" font-lock-faces)
   :group 'languages   )
 
 (defcustom powershell-indent 4
-  "Amount of horizontal space to indent after, for instance, an
-opening brace"
+  "Amount of horizontal space to indent.
+After, for instance, an opening brace"
   :type 'integer
   :group 'powershell)
 
 (defcustom powershell-continuation-indent 2
-  "Amount of horizontal space to indent a continuation line"
+  "Amount of horizontal space to indent a continuation line."
   :type 'integer
   :group 'powershell)
 
 (defcustom powershell-continued-regexp  ".*\\(|[\\t ]*\\|`\\)$"
-  "Regexp matching a continued line (ending either with an
-explicit backtick, or with a pipe)."
+  "Regexp matching a continued line.
+Ending either with an explicit backtick, or with a pipe."
   :type 'integer
   :group 'powershell)
 
 (defun powershell-continuation-line-p ()
-  "Returns t is the current line is a continuation line (i.e. the
-previous line is a continued line, ending with a backtick or a pipe"
+  "Return t is the current line is a continuation line.
+The current line is a continued line when the previous line ends
+with a backtick or a pipe"
   (interactive)
   (save-excursion
     (forward-line -1)
@@ -73,7 +79,7 @@ previous line is a continued line, ending with a backtick or a pipe"
 
 ;; Rick added significant complexity to Frédéric's original version
 (defun powershell-indent-line-amount ()
-  "Returns the column to which the current line ought to be indented."
+  "Return the column to which the current line ought to be indented."
   (interactive)
   (save-excursion
     (beginning-of-line)
@@ -124,8 +130,8 @@ previous line is a continued line, ending with a backtick or a pipe"
            0))))))
 
 (defun powershell-indent-line ()
-  "Indent the current line of powershell mode, leaving the point
-in place if it is inside the meat of the line"
+  "Indent the current line of powershell mode.
+Leave the point in place if it is inside the meat of the line"
   (interactive)
   (let ((savep (> (current-column) (current-indentation)))
         (amount (powershell-indent-line-amount)))
@@ -134,7 +140,8 @@ in place if it is inside the meat of the line"
       (indent-line-to amount))))
 
 (defun powershell-quote-selection (beg end)
-  "Quotes the selection with single quotes and doubles embedded single quotes"
+  "Quotes the selection between BEG and END.
+Quotes with single quotes and doubles embedded single quotes."
   (interactive `(,(region-beginning) ,(region-end)))
   (if (not mark-active)
       (error "Command requires a marked region"))
@@ -148,7 +155,8 @@ in place if it is inside the meat of the line"
   (insert "'"))
 
 (defun powershell-unquote-selection (beg end)
-  "Unquotes the selected text removing doubles as we go"
+  "Unquotes the selected text between BEG and END.
+Remove doubled single quotes as we go."
   (interactive `(,(region-beginning) ,(region-end)))
   (if (not mark-active)
       (error "Command requires a marked region"))
@@ -181,10 +189,11 @@ in place if it is inside the meat of the line"
              (delete-char -1)
              (forward-char)
              (setq end (1- end)))))
-        (t (error "Must select quoted text exactly."))))
+        (t (error "Must select quoted text exactly"))))
 
 (defun powershell-escape-selection (beg end)
-  "Escapes variables in the selection and extends existing escapes."
+  "Escape variables between BEG and END.
+Also extend existing escapes."
   (interactive `(,(region-beginning) ,(region-end)))
   (if (not mark-active)
       (error "Command requires a marked region"))
@@ -200,7 +209,8 @@ in place if it is inside the meat of the line"
     (setq end (1+ end))))
 
 (defun powershell-doublequote-selection (beg end)
-  "Quotes the selection with double quotes, doubles embedded quotes"
+  "Quotes the text between BEG and END with double quotes.
+Embedded quotes are doubled."
   (interactive `(,(region-beginning) ,(region-end)))
   (if (not mark-active)
       (error "Command requires a marked region"))
@@ -217,7 +227,8 @@ in place if it is inside the meat of the line"
   (insert "\""))
 
 (defun powershell-dollarparen-selection (beg end)
-  "Wraps the selected text with $() leaving point after closing paren."
+  "Wraps the text between BEG and END with $().
+The point is moved to the closing paren."
   (interactive `(,(region-beginning) ,(region-end)))
   (if (not mark-active)
       (error "Command requires a marked region"))
@@ -229,7 +240,8 @@ in place if it is inside the meat of the line"
   (forward-char))
 
 (defun powershell-regexp-to-regex (beg end)
-  "Turns the selected string (assumed to be regexp-opt output) into a regex"
+  "Turn the text between BEG and END into a regex.
+The text is assumed to be `regexp-opt' output."
   (interactive `(,(region-beginning) ,(region-end)))
   (if (not mark-active)
       (error "Command requires a marked region"))
@@ -261,7 +273,7 @@ in place if it is inside the meat of the line"
              "throw"         "trap"          "try"
              "until"         "where"         "while"         ) t)
           "\\_>")
-  "Powershell keywords")
+  "Powershell keywords.")
 
 ;; Taken from About_Comparison_Operators and some questionable sources :-)
 (defvar powershell-operators
@@ -282,7 +294,7 @@ in place if it is inside the meat of the line"
              "-begin" "-process" "-end" ;specific to scriptblock
              ) t)
           "\\_>")
-  "Powershell operators")
+  "Powershell operators.")
 
 (defvar powershell-scope-names
   '("global"   "local"    "private"  "script"   )
@@ -300,7 +312,7 @@ in place if it is inside the meat of the line"
   (concat
    "\\_<$\\(?:{\\(?:" (regexp-opt powershell-variable-drive-names t) ":\\)?[^}]+}\\|"
    "\\(?:" (regexp-opt powershell-variable-drive-names t) ":\\)?[a-zA-Z0-9_]+\\_>\\)")
-  "Identifies legal powershell variable names")
+  "Identifies legal powershell variable names.")
 
 (defconst powershell-function-names-regex
   ;; Syntax detected is [scope:]verb-noun
@@ -310,18 +322,18 @@ in place if it is inside the meat of the line"
   (concat
    "\\_<\\(?:" (regexp-opt powershell-scope-names t) ":\\)?"
    "\\([A-Z][a-zA-Z0-9]*-[A-Z0-9][a-zA-Z0-9]*\\)\\_>")
-  "Identifies legal function & filter names")
+  "Identifies legal function & filter names.")
 
 (defconst powershell-object-types-regexp
   ;; Syntax is \[name[.name]\] (where the escaped []s are literal)
   ;; Only Match 0 is returned.
   "\\[\\(?:[a-zA-Z_][a-zA-Z0-9]*\\)\\(?:\\.[a-zA-Z_][a-zA-Z0-9]*\\)*\\]"
-  "Identifies object type references.  I.E. [object.data.type] syntax")
+  "Identifies object type references.  I.E. [object.data.type] syntax.")
 
 (defconst powershell-function-switch-names-regexp
   ;; Only Match 0 is returned.
   "\\_<-[a-zA-Z][a-zA-Z0-9]*\\_>"
-  "Identifies function parameter names of the form -xxxx")
+  "Identifies function parameter names of the form -xxxx.")
 
 ;; Taken from Get-Variable on a fresh shell, merged with man
 ;; about_automatic_variables
@@ -348,8 +360,8 @@ in place if it is inside the meat of the line"
      "ShellId"                        "SourceArgs"
      "SourceEventArgs"                "StackTrace"
      "this"                           "true"                           ) t)
-  "Names of the built-in Powershell variables. They are hilighted
-differently from the other variables.")
+  "The names of the built-in Powershell variables.
+They are highlighted differently from the other variables.")
 
 (defvar powershell-config-variables-regexp
   (regexp-opt
@@ -371,7 +383,7 @@ differently from the other variables.")
 
 
 (defun powershell-find-syntactic-comments (limit)
-  "Finds PowerShell comment begin and comment end characters.
+  "Find PowerShell comment begin and comment end characters.
 Returns match 1 and match 2 for <# #> comment sequences respectively.
 Returns match 3 and optionally match 4 for #/eol comments.
 Match 4 is returned only if eol is found before LIMIT"
@@ -398,7 +410,7 @@ Match 4 is returned only if eol is found before LIMIT"
     t))
 
 (defun powershell-find-syntactic-quotes (limit)
-  "Finds PowerShell hear string begin and end sequences.
+  "Find PowerShell hear string begin and end sequences upto LIMIT.
 Returns match 1 and match 2 for @' '@ sequences respectively.
 Returns match 3 and match 4 for @\" \"@ sequences respectively."
   (when (search-forward "@" limit t)
@@ -429,8 +441,9 @@ Returns match 3 and match 4 for @\" \"@ sequences respectively."
                                         (3 "<" t t) (4 ">" t t))
     (powershell-find-syntactic-quotes (1 "|" t t) (2 "|" t t)
                                       (3 "|" t t) (4 "|" t t)))
-  "A list of regexp's or functions.  Used to add syntax-table properties to
-characters that can't be set by the syntax-table alone.")
+  "A list of regexp's or functions.
+Used to add `syntax-table' properties to
+characters that can't be set by the `syntax-table' alone.")
 
 
 (defvar powershell-font-lock-keywords-1
@@ -475,7 +488,7 @@ characters that can't be set by the syntax-table alone.")
 
 
 (defun powershell-setup-font-lock ()
-  "Sets up the buffer local value for font-lock-defaults"
+  "Set up the buffer local value for `font-lock-defaults'."
   ;; I use font-lock-syntactic-keywords to set some properties and I
   ;; don't want them ignored.
   (set (make-local-variable 'parse-sexp-lookup-properties) t)
@@ -522,7 +535,7 @@ characters that can't be set by the syntax-table alone.")
     (modify-syntax-entry ?' "\"" powershell-mode-syntax-table)
     (modify-syntax-entry ?#  "<" powershell-mode-syntax-table)
     powershell-mode-syntax-table)
-  "Syntax for PowerShell major mode")
+  "Syntax for PowerShell major mode.")
 
 (defvar powershell-mode-map
   (let ((powershell-mode-map (make-keymap)))
@@ -535,10 +548,10 @@ characters that can't be set by the syntax-table alone.")
     (define-key powershell-mode-map (kbd "M-`") 'powershell-escape-selection)
     (define-key powershell-mode-map (kbd "C-$") 'powershell-dollarparen-selection)
     powershell-mode-map)
-  "Keymap for PS major mode")
+  "Keymap for PS major mode.")
 
 (defun powershell-setup-menu ()
-  "Adds a menu of PowerShell specific functions to the menu bar."
+  "Add a menu of PowerShell specific functions to the menu bar."
   (define-key (current-local-map) [menu-bar powershell-menu]
     (cons "PowerShell" (make-sparse-keymap "PowerShell")))
   (define-key (current-local-map) [menu-bar powershell-menu doublequote]
@@ -567,8 +580,8 @@ characters that can't be set by the syntax-table alone.")
 
 (eval-when-compile (require 'thingatpt))
 (defcustom powershell-eldoc-def-files nil
-  "List of files containing function help strings used by `eldoc-mode'.
-These are the strings eldoc-mode displays as help for functions near point.
+  "List of files containing function help strings used by function `eldoc-mode'.
+These are the strings function `eldoc-mode' displays as help for functions near point.
 The format of the file must be exactly as follows or who knows what happens.
 
    (set (intern \"<fcn-name1>\" powershell-eldoc-obarray) \"<helper string1>\")
@@ -584,13 +597,13 @@ Where <fcn-name> is the name of the function to which <helper string> applies.
   "Array into which powershell-eldoc-def-files entries are added for use by eldoc.")
 
 (defun powershell-eldoc-function ()
-  "Returns a documentation string appropriate for the current context or nil"
+  "Return a documentation string appropriate for the current context or nil."
   (let ((word (thing-at-point 'symbol)))
     (if word
         (eval (intern-soft word powershell-eldoc-obarray)))))
 
 (defun powershell-setup-eldoc ()
-  "Loads the function documentation for use with eldoc."
+  "Load the function documentation for use with eldoc."
   (when (not (null powershell-eldoc-def-files))
     (set (make-local-variable 'eldoc-documentation-function)
          'powershell-eldoc-function)
@@ -650,7 +663,7 @@ Where <fcn-name> is the name of the function to which <helper string> applies.
   "List of regexps matching important expressions, for speebar & imenu.")
 
 (defun powershell-setup-imenu ()
-  "Installs powershell-imenu-expression."
+  "Install powershell-imenu-expression."
   (when (require 'imenu nil t)
     ;; imenu doc says these are buffer-local by default
     (setq imenu-generic-expression powershell-imenu-expression)
@@ -670,7 +683,7 @@ Where <fcn-name> is the name of the function to which <helper string> applies.
 ;; are associated with powershell.exe. And if they don't contain spaces.
 (defvar powershell-compile-command
   '(buffer-file-name)
-  "Default command used to invoke a powershell script")
+  "Default command used to invoke a powershell script.")
 
 ;; The column number will be off whenever tabs are used. Since this is
 ;; the default in this mode, we will not capture the column number.
@@ -702,6 +715,14 @@ Where <fcn-name> is the name of the function to which <helper string> applies.
   (powershell-setup-eldoc)
   (run-hooks 'powershell-mode-hook))
 
+;; Local Variables:
+;; lexical-binding: t
+;; End:
+
 (provide 'powershell-mode)
 
 ;;; end of powershell-mode.el
+
+(provide 'powershell-mode)
+
+;;; powershell-mode.el ends here
