@@ -14,7 +14,7 @@
 ;; Run Windows PowerShell v1.0 or v2.0 as an inferior shell within
 ;; Emacs.  Tested with Emacs v22.2 and v23.2.
 ;;
-;; To use it, M-x powershell .
+;; To use it, M-x powershell.
 ;;
 ;; ==============
 ;;
@@ -99,29 +99,26 @@ of a command in a string.  PowerShell by default, inserts newlines when
 the output exceeds the configured width of the powershell virtual
 window. In some cases callers might want to get the results with the
 newlines and formatting removed. Set this to true, to do that."
-
 :group 'powershell)
 
 (defvar powershell-prompt-regex  "PS [^#$%>]+> "
-  "Regexp for powershell prompt.
-
-Powershell.el uses this regex to determine when a command has completed.
-
-Therefore, you need to set this appropriately if you explicitly
-change the prompt function in powershell.  Any value should
-include a trailing space, if the powershell prompt uses a
+  "Regexp to match the powershell prompt.
+Powershell.el uses this regex to determine when a command has
+completed.  Therefore, you need to set this appropriately if you
+explicitly change the prompt function in powershell.  Any value
+should include a trailing space, if the powershell prompt uses a
 trailing space, but should not include a trailing newline.
 
 The default value will match the default PowerShell prompt.")
 
 (defvar powershell-command-reply nil
-  "For internal use only. It holds the reply of powershell
-commands sent for housekeeping purposes.")
+  "The reply of powershell commands.
+This is retained for housekeeping purposes.")
 
 (defvar powershell--max-window-width  0
-  "The maximum width of a powershell window.  You shouldn't need to ever
-set this.  It gets set automatically, once, when the powershell starts up."
-  )
+  "The maximum width of a powershell window.
+You shouldn't need to ever set this.  It gets set automatically,
+once, when the powershell starts up.")
 
 (defvar powershell-command-timeout-seconds 12
   "The timeout for a powershell command.
@@ -200,8 +197,7 @@ TEXT is a format control string, and the remaining arguments ARGS
 are the string substitutions (see `format')."
   (if (<= level powershell-log-level)
       (let* ((msg (apply 'format text args)))
-        (message "%s" msg)
-        )))
+        (message "%s" msg))))
 
 ;; (defun dino-powershell-complete (arg)
 ;; "do powershell completion on the given STRING. Pop up a buffer
@@ -287,9 +283,9 @@ The function gets defined in powershell upon powershell startup."
                "('" ps-width "')")))))
 
 (defun powershell (&optional buffer prompt-string)
-
-  "Run an inferior PowerShell, with I/O through the named
-BUFFER (which defaults to `*PowerShell*').
+  "Run an inferior PowerShell.
+If BUFFER is non-nil, use it to hold the powershell
+process.  Defaults to *PowerShell*.
 
 Interactively, a prefix arg means to prompt for BUFFER.
 
@@ -479,10 +475,11 @@ This function is intended for internal use only."
 
 (defun powershell-invoke-command-silently (proc command
                                                 &optional timeout-seconds)
-  "Invoke COMMAND in the PowerShell instance PROC, silently, without
-echoing the command or the results to the associated buffer.  Use
-TIMEOUT-SECONDS as the timeout, waiting for a response.  The COMMAND
-should be a string, and need not be terminated with a newline.
+  "In the PowerShell instance PROC, invoke COMMAND silently.
+Neither the COMMAND is echoed nor the results to the associated
+buffer.  Use TIMEOUT-SECONDS as the timeout, waiting for a
+response.  The COMMAND should be a string, and need not be
+terminated with a newline.
 
 This is helpful when, for example, doing setup work. Or other sneaky
 stuff, such as resetting the size of the PowerShell virtual window.
