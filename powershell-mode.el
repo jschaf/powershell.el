@@ -706,7 +706,11 @@ Where <fcn-name> is the name of the function to which <helper string> applies.
 
 ;;;###autoload
 (define-derived-mode powershell-mode prog-mode "PS"
-  "Major mode for editing PowerShell scripts."
+  "Major mode for editing PowerShell scripts.
+
+\\{powershell-mode-map}
+Entry to this mode calls the value of `powershell-mode-hook' if
+that value is non-nil."
   (powershell-setup-font-lock)
   (set (make-local-variable 'indent-line-function) 'powershell-indent-line)
   (set (make-local-variable 'compile-command) powershell-compile-command)
