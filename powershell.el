@@ -727,6 +727,9 @@ This insures we get and display the prompt."
 ;;           (insert " "))
 ;;       success)))
 
+;; Local Variables:
+;; lexical-binding: t
+;; End:
 
 (provide 'powershell)
 
