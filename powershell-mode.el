@@ -725,8 +725,4 @@ Where <fcn-name> is the name of the function to which <helper string> applies.
 
 (provide 'powershell-mode)
 
-;;; end of powershell-mode.el
-
-(provide 'powershell-mode)
-
 ;;; powershell-mode.el ends here
