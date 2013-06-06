@@ -704,14 +704,8 @@ Where <fcn-name> is the name of the function to which <helper string> applies.
 (defvar powershell-mode-hook '(imenu-add-menubar-index)
   "Hook run after the initialization of Powershell mode.")
 
-(defun powershell-mode ()
+(define-derived-mode powershell-mode prog-mode "PS"
   "Major mode for editing PowerShell scripts."
-  (interactive)
-  (kill-all-local-variables)
-  (setq major-mode 'powershell-mode)
-  (setq mode-name "PS")
-  (set-syntax-table powershell-mode-syntax-table)
-  (use-local-map powershell-mode-map)
   (powershell-setup-font-lock)
   (set (make-local-variable 'indent-line-function) 'powershell-indent-line)
   (set (make-local-variable 'compile-command) powershell-compile-command)
@@ -720,8 +714,7 @@ Where <fcn-name> is the name of the function to which <helper string> applies.
   (set (make-local-variable 'parse-sexp-ignore-comments) t)
   (powershell-setup-imenu)
   (powershell-setup-menu)
-  (powershell-setup-eldoc)
-  (run-hooks 'powershell-mode-hook))
+  (powershell-setup-eldoc))
 
 ;; Local Variables:
 ;; lexical-binding: t
