@@ -9,7 +9,6 @@
 ;; Last-saved : <2011-February-17 12:10:59>
 ;;
 
-
 ;;; Commentary:
 ;;
 ;; Run Windows PowerShell v1.0 or v2.0 as an inferior shell within
@@ -40,7 +39,6 @@
 ;;          - fix "Marker does not point anywhere" problem in
 ;;            `ansi-color-apply-on-region'.
 ;;
-
 
 ;;; License:
 ;;
@@ -80,8 +78,6 @@
 ;;
 ;;
 
-
-
 (require 'shell)
 
 ;; TODO: set this programmatically, relying on %WINDIR%
@@ -106,8 +102,6 @@ newlines and formatting removed. Set this to true, to do that."
 
 :group 'powershell)
 
-
-
 (defvar powershell-prompt-regex  "PS [^#$%>]+> "
   "Regexp for powershell prompt.
 
@@ -124,7 +118,6 @@ The default value will match the default PowerShell prompt.")
   "For internal use only. It holds the reply of powershell
 commands sent for housekeeping purposes.")
 
-
 (defvar powershell--max-window-width  0
   "The maximum width of a powershell window.  You shouldn't need to ever
 set this.  It gets set automatically, once, when the powershell starts up."
@@ -134,12 +127,10 @@ set this.  It gets set automatically, once, when the powershell starts up."
   "The timeout for a powershell command.
 Powershell.el will wait this long before giving up.")
 
-
 (defvar powershell--need-rawui-resize t
   "No need to fuss with this.  It's intended for internal use
 only.  It gets set when powershell needs to be informed that
 emacs has resized its window.")
-
 
 (defconst powershell--find-max-window-width-command
   (concat
@@ -157,11 +148,9 @@ emacs has resized its window.")
   "_Emacs_GetMaxPhsWindowSize\n")
   "The powershell logic to determine the max physical window width.")
 
-
 (defconst powershell--set-window-width-fn-name  "_Emacs_SetWindowWidth"
   "The name of the function this mode defines in PowerShell to
 set the window width. Intended for internal use only.")
-
 
 (defconst powershell--text-of-set-window-width-ps-function
   ;; see
@@ -203,8 +192,6 @@ set the window width. Intended for internal use only.")
 set the width of the virtual Window in PowerShell, as the Emacs window
 gets resized.")
 
-
-
 (defun powershell-log (level text &rest args)
   "Log a message at level LEVEL.
 If LEVEL is higher than `powershell-log-level', the message is
@@ -215,7 +202,6 @@ are the string substitutions (see `format')."
       (let* ((msg (apply 'format text args)))
         (message "%s" msg)
         )))
-
 
 ;; (defun dino-powershell-complete (arg)
 ;; "do powershell completion on the given STRING. Pop up a buffer
@@ -242,8 +228,6 @@ are the string substitutions (see `format')."
 ;;    )
 ;; )
 
-
-
 (defun powershell--define-set-window-width-function (proc)
   "Sends a function definition to the PowerShell instance
 identified by PROC.  The function sets the window width of the
@@ -255,9 +239,6 @@ when the width of the emacs window changes."
           (comint-simple-send
            proc
            powershell--text-of-set-window-width-ps-function))))
-
-
-
 
 (defun powershell--get-max-window-width  (buffer-name)
   "Gets the maximum width of the virtual window for PowerShell running
@@ -288,9 +269,6 @@ This function does the right thing, and sets the buffer-local
                     (string-to-number (match-string 1 powershell-command-reply))
                   200)))))) ;; could go to 210, but let's use 200 to be safe
 
-
-
-
 (defun powershell--set-window-width (proc)
   "Run the PowerShell function that sets the RawUI width
 appropriately for a PowerShell shell.
@@ -307,9 +285,6 @@ The function gets defined in powershell upon powershell startup."
        proc
        (concat powershell--set-window-width-fn-name
                "('" ps-width "')")))))
-
-
-
 
 (defun powershell (&optional buffer prompt-string)
 
@@ -348,7 +323,6 @@ See the help for `shell' for more details.  \(Type
   ;; "[Ionic.Csde.Utilities]::Version()" 2.9)
 
   ;;  (comint-simple-send (get-buffer-process "*csdeshell*") "prompt\n")
-
 
   (let ((proc (get-buffer-process buffer)))
 
@@ -425,7 +399,6 @@ See the help for `shell' for more details.  \(Type
   ;; return the buffer created
   buffer)
 
-
 ;; +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
 ;; Using powershell on emacs23, I get an error:
 ;;
@@ -467,9 +440,6 @@ See the help for `shell' for more details.  \(Type
       (progn
         ad-do-it))))))
 
-
-
-
 (defun powershell--silent-cmd-filter (process result)
 "A process filter that captures output from a shell and stores it
 to `powershell-command-reply', rather than allowing the output to
@@ -504,8 +474,6 @@ This function is intended for internal use only."
         ;; recurse.  For very very long output, the recursion can
         ;; cause stack overflow. Careful!
         (accept-process-output process powershell-command-timeout-seconds)))))
-
-
 
 (defun powershell-invoke-command-silently (proc command
                                                 &optional timeout-seconds)
@@ -580,16 +548,12 @@ Example:
     ;; the result:
     powershell-command-reply))
 
-
-
-
 (defun powershell-delete-process (&optional proc)
   "Delete the current buffer process or PROC."
   (or proc
       (setq proc (get-buffer-process (current-buffer))))
   (and (processp proc)
        (delete-process proc)))
-
 
 (defun powershell-preoutput-filter-for-prompt (string)
   "Trim the newline from STRING, the prompt that we get back from
@@ -598,7 +562,6 @@ newline is trimmed before being put into the output buffer."
    (if (string-match (concat powershell-prompt-regex "\n\\'") string)
        (substring string 0 -1) ;; remove newline
      string))
-
 
 (defun powershell-simple-send (proc string)
   "Override of the comint-simple-send function, with logic
@@ -639,8 +602,6 @@ This insures we get and display the prompt."
   (comint-simple-send proc (concat string "\n"))
   (comint-simple-send proc "prompt\n"))
 
-
-
 ;; Notes on TAB for completion.
 ;; -------------------------------------------------------
 ;; Emacs calls comint-dynamic-complete when the TAB key is pressed in a shell.
@@ -658,8 +619,6 @@ This insures we get and display the prompt."
 ;;    shell-dynamic-complete-command
 ;;    shell-replace-by-expanded-directory
 ;;    comint-dynamic-complete-filename)
-
-
 
 ;; (defun powershell-dynamic-complete-command ()
 ;;   "Dynamically complete the command at point.  This function is
@@ -680,7 +639,6 @@ This insures we get and display the prompt."
 ;;                  (save-excursion (shell-backward-command 1) (point))))
 ;;         (prog2 (message "Completing command name...")
 ;;             (powershell-dynamic-complete-as-command)))))
-
 
 ;; (defun powershell-dynamic-complete-as-command ()
 ;;   "Dynamically complete at point as a command.
