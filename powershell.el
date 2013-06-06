@@ -273,9 +273,7 @@ This function does the right thing, and sets the buffer-local
   (let ((proc (get-buffer-process buffer-name)))
 
     (if proc
-        (save-excursion
-          (set-buffer buffer-name) ;; to get buffer-local variables
-
+        (with-current-buffer buffer-name
           (powershell-invoke-command-silently
            proc
            powershell--find-max-window-width-command
