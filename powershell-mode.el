@@ -673,8 +673,9 @@ Where <fcn-name> is the name of the function to which <helper string> applies.
       (which-function-mode t))))
 
 (eval-when-compile (require 'speedbar))
-(if (require 'speedbar nil t)
-    (speedbar-add-supported-extension ".ps1?"))
+(when (require 'speedbar nil t)
+  (declare-function speedbar-add-supported-extension "speedbar")
+  (speedbar-add-supported-extension ".ps1?"))
 
 (require 'compile nil t)
 ;; A better command would be something like "powershell.exe -NoLogo
