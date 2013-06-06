@@ -43,8 +43,14 @@
 ;; 2012/10/05 Added eldoc support.  Fixed bug where indent could loop.
 ;;            See comment below on how to generate powershell-eldoc.el
 
-;; Variables you may want to customize.
+(eval-when-compile (require 'thingatpt))
+(eval-when-compile (require 'speedbar))
+(require 'compile nil t)
+
 ;;; Code:
+
+
+;; User Variables
 
 (defgroup powershell nil
   "Customization of PowerShell mode."
@@ -578,7 +584,6 @@ characters that can't be set by the `syntax-table' alone.")
 
 ;;; Eldoc support
 
-(eval-when-compile (require 'thingatpt))
 (defcustom powershell-eldoc-def-files nil
   "List of files containing function help strings used by function `eldoc-mode'.
 These are the strings function `eldoc-mode' displays as help for functions near point.
@@ -672,12 +677,10 @@ Where <fcn-name> is the name of the function to which <helper string> applies.
     (when (require 'which-func nil t)
       (which-function-mode t))))
 
-(eval-when-compile (require 'speedbar))
 (when (require 'speedbar nil t)
   (declare-function speedbar-add-supported-extension "speedbar")
   (speedbar-add-supported-extension ".ps1?"))
 
-(require 'compile nil t)
 ;; A better command would be something like "powershell.exe -NoLogo
 ;; -NonInteractive -Command & (buffer-file-name)". But it will just
 ;; sit there waiting...  The following will only work when .ps1 files
