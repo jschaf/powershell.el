@@ -43,11 +43,15 @@
 ;; 2012/10/05 Added eldoc support.  Fixed bug where indent could loop.
 ;;            See comment below on how to generate powershell-eldoc.el
 
+
+;;; Code:
+
 (eval-when-compile (require 'thingatpt))
 (eval-when-compile (require 'speedbar))
 (require 'compile nil t)
 
-;;; Code:
+;;;###autoload
+(add-to-list 'auto-mode-alist (cons (purecopy "\\.ps1\\'")  'powershell-mode))
 
 
 ;; User Variables
