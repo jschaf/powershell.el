@@ -13,7 +13,7 @@
 ;;; Commentary:
 ;;
 ;; Run Windows PowerShell v1.0 or v2.0 as an inferior shell within
-;; emacs. Tested with emacs v22.2 and v23.2.
+;; Emacs.  Tested with Emacs v22.2 and v23.2.
 ;;
 ;; To use it, M-x powershell .
 ;;
@@ -85,14 +85,16 @@
 (require 'shell)
 
 ;; TODO: set this programmatically, relying on %WINDIR%
+;;; Code:
+
 (defcustom powershell-location-of-exe
   "c:\\windows\\system32\\WindowsPowerShell\\v1.0\\powershell.exe"
-  "A string, providing the location of the Powershell.exe"
+  "A string, providing the location of the Powershell.exe."
   :group 'powershell)
 
 (defcustom powershell-log-level 3
   "The current log level for powershell internal operations.
-0 = NONE, 1 = Info, 2 = VERBOSE, 3 = DEBUG. "
+0 = NONE, 1 = Info, 2 = VERBOSE, 3 = DEBUG."
   :group 'powershell)
 
 (defcustom powershell-squish-results-of-silent-commands t
@@ -112,63 +114,65 @@ newlines and formatting removed. Set this to true, to do that."
 Powershell.el uses this regex to determine when a command has completed.
 
 Therefore, you need to set this appropriately if you explicitly
-change the prompt function in powershell. Any value should
+change the prompt function in powershell.  Any value should
 include a trailing space, if the powershell prompt uses a
 trailing space, but should not include a trailing newline.
 
-The default value will match the default PowerShell prompt.
-")
+The default value will match the default PowerShell prompt.")
 
 (defvar powershell-command-reply nil
-  "For internal use only. It holds the reply of powershell commands sent for housekeeping purposes.")
+  "For internal use only. It holds the reply of powershell
+commands sent for housekeeping purposes.")
 
 
 (defvar powershell--max-window-width  0
   "The maximum width of a powershell window.  You shouldn't need to ever
-set this.  It gets set automatically, once, when the powershell starts up. "
+set this.  It gets set automatically, once, when the powershell starts up."
   )
 
 (defvar powershell-command-timeout-seconds 12
-  "The timeout for a powershell command.  Powershell.el
-will wait this long before giving up.")
+  "The timeout for a powershell command.
+Powershell.el will wait this long before giving up.")
 
 
 (defvar powershell--need-rawui-resize t
   "No need to fuss with this.  It's intended for internal use
 only.  It gets set when powershell needs to be informed that
-emacs has resized its window. ")
+emacs has resized its window.")
 
 
 (defconst powershell--find-max-window-width-command
   (concat
   "function _Emacs_GetMaxPhsWindowSize \n"
-"{\n"
-"  $rawui = (Get-Host).UI.RawUI\n"
-"  $mpws_exists = ($rawui | Get-Member | ? {$_.Name -eq \"MaxPhysicalWindowSize\"})\n"
-"  if ($mpws_exists -eq $null) {\n"
-"    \"210\" | Out-Host\n"
-"  } else {\n"
-"    $rawui.MaxPhysicalWindowSize.Width | Out-Host\n"
-"  }\n"
-"}\n"
-"_Emacs_GetMaxPhsWindowSize\n"
-)
-  "The powershell logic to determine the max physical window width."
-  )
+  "{\n"
+  "  $rawui = (Get-Host).UI.RawUI\n"
+  "  $mpws_exists = ($rawui | Get-Member | ? "
+  "{$_.Name -eq \"MaxPhysicalWindowSize\"})\n"
+  "  if ($mpws_exists -eq $null) {\n"
+  "    \"210\" | Out-Host\n"
+  "  } else {\n"
+  "    $rawui.MaxPhysicalWindowSize.Width | Out-Host\n"
+  "  }\n"
+  "}\n"
+  "_Emacs_GetMaxPhsWindowSize\n")
+  "The powershell logic to determine the max physical window width.")
 
 
 (defconst powershell--set-window-width-fn-name  "_Emacs_SetWindowWidth"
-  "The name of the function this mode defines in PowerShell to set the window width. Intended for internal use only. ")
+  "The name of the function this mode defines in PowerShell to
+set the window width. Intended for internal use only.")
 
 
 (defconst powershell--text-of-set-window-width-ps-function
-  ;; see http://blogs.msdn.com/lior/archive/2009/05/27/ResizePowerShellConsoleWindow.aspx
+  ;; see
+  ;; http://blogs.msdn.com/lior/archive/2009/05/27/ResizePowerShellConsoleWindow.aspx
   ;;
   ;; When making the console window narrower, you mus set the window
   ;; size first. When making the console window wider, you must set the
   ;; buffer size first.
 
-    (concat  "function " powershell--set-window-width-fn-name "([string] $pswidth)\n"
+    (concat  "function " powershell--set-window-width-fn-name
+             "([string] $pswidth)\n"
              "{\n"
              ;;"  \"resetting window width to $pswidth\n\" | Out-Host\n"
              "  $rawui = (Get-Host).UI.RawUI\n"
@@ -197,8 +201,7 @@ emacs has resized its window. ")
 
     "The text of the powershell function that will be used at runtime to
 set the width of the virtual Window in PowerShell, as the Emacs window
-gets resized.
-")
+gets resized.")
 
 
 
@@ -215,7 +218,8 @@ are the string substitutions (see `format')."
 
 
 ;; (defun dino-powershell-complete (arg)
-;;   "do powershell completion on the given STRING. Pop up a buffer with the completion list."
+;; "do powershell completion on the given STRING. Pop up a buffer
+;; with the completion list."
 ;;   (interactive
 ;;    (list (read-no-blanks-input "\
 ;; Stub to complete: ")))
@@ -244,8 +248,7 @@ are the string substitutions (see `format')."
   "Sends a function definition to the PowerShell instance
 identified by PROC.  The function sets the window width of the
 PowerShell virtual window.  Later, the function will be called
-when the width of the emacs window changes.
-"
+when the width of the emacs window changes."
     (if proc
         (progn
           ;;process-send-string
@@ -266,9 +269,7 @@ windowsize.Width is provided in the RawUI.MaxPhysicalWindowSize
 property.
 
 This function does the right thing, and sets the buffer-local
-`powershell--max-window-width' variable with the correct value.
-
-"
+`powershell--max-window-width' variable with the correct value."
   (let ((proc (get-buffer-process buffer-name)))
 
     (if proc
@@ -299,8 +300,7 @@ appropriately for a PowerShell shell.
 This is necessary to get powershell to do the right thing, as far
 as text formatting, when the emacs window gets resized.
 
-The function gets defined in powershell upon powershell startup.
-"
+The function gets defined in powershell upon powershell startup."
   (let ((ps-width
          (number-to-string (min powershell--max-window-width (window-width)))))
     (progn
@@ -327,9 +327,7 @@ If BUFFER exists and the shell process is running, just switch to BUFFER.
 If PROMPT-STRING is non-nil, sets the prompt to the given value.
 
 See the help for `shell' for more details.  \(Type
-\\[describe-mode] in the shell buffer for a list of commands.)
-
-"
+\\[describe-mode] in the shell buffer for a list of commands.)"
   (interactive
    (list
     (and current-prefix-arg
@@ -348,7 +346,8 @@ See the help for `shell' for more details.  \(Type
     (setq explicit-shell-file-name tmp-shellfile))
 
   ;; (powershell--get-max-window-width "*PowerShell*")
-  ;; (powershell-invoke-command-silently (get-buffer-process "*csdeshell*") "[Ionic.Csde.Utilities]::Version()" 2.9)
+  ;; (powershell-invoke-command-silently (get-buffer-process "*csdeshell*")
+  ;; "[Ionic.Csde.Utilities]::Version()" 2.9)
 
   ;;  (comint-simple-send (get-buffer-process "*csdeshell*") "prompt\n")
 
@@ -413,8 +412,10 @@ See the help for `shell' for more details.  \(Type
     (make-local-variable 'comint-input-sender)
     (setq comint-input-sender 'powershell-simple-send)
 
-    ;; set a preoutput filter for powershell.  This will trim newlines after the prompt.
-    (add-hook 'comint-preoutput-filter-functions 'powershell-preoutput-filter-for-prompt)
+    ;; set a preoutput filter for powershell.  This will trim newlines
+    ;; after the prompt.
+    (add-hook 'comint-preoutput-filter-functions
+              'powershell-preoutput-filter-for-prompt)
 
     ;; send a carriage-return  (get the prompt)
     (comint-send-input)
@@ -476,8 +477,7 @@ See the help for `shell' for more details.  \(Type
 to `powershell-command-reply', rather than allowing the output to
 be displayed in the shell buffer.
 
-This function is intended for internal use only.
-"
+This function is intended for internal use only."
   (let ((end-of-result
          (string-match (concat ".*\n\\(" powershell-prompt-regex "\\)[ \n]*\\'")
                        result)))
@@ -509,7 +509,8 @@ This function is intended for internal use only.
 
 
 
-(defun powershell-invoke-command-silently (proc command &optional timeout-seconds)
+(defun powershell-invoke-command-silently (proc command
+                                                &optional timeout-seconds)
   "Invoke COMMAND in the PowerShell instance PROC, silently, without
 echoing the command or the results to the associated buffer.  Use
 TIMEOUT-SECONDS as the timeout, waiting for a response.  The COMMAND
@@ -538,9 +539,7 @@ Example:
       (powershell-invoke-command-silently
        proc
        command-string
-       1.90))
-
-"
+       1.90))"
 
   (let ((old-timeout powershell-command-timeout-seconds)
         (original-filter (process-filter proc)))
@@ -587,6 +586,7 @@ Example:
 
 
 (defun powershell-delete-process (&optional proc)
+  "Delete the current buffer process or PROC."
   (or proc
       (setq proc (get-buffer-process (current-buffer))))
   (and (processp proc)
@@ -596,8 +596,7 @@ Example:
 (defun powershell-preoutput-filter-for-prompt (string)
   "Trim the newline from STRING, the prompt that we get back from
 powershell.  This fn is set into the preoutput filters, so the
-newline is trimmed before being put into the output buffer.
-"
+newline is trimmed before being put into the output buffer."
    (if (string-match (concat powershell-prompt-regex "\n\\'") string)
        (substring string 0 -1) ;; remove newline
      string))
@@ -617,8 +616,7 @@ sending the actual (primary) command. When the primary command
 completes, Powershell then responds to the \"prompt\" command,
 and emits the prompt.
 
-This insures we get and display the prompt.
-"
+This insures we get and display the prompt."
   ;; Tell PowerShell to resize its virtual window, if necessary. We do
   ;; this by calling a resize function in the PowerShell, before sending
   ;; the user-entered command to the shell.
@@ -650,8 +648,9 @@ This insures we get and display the prompt.
 ;; Emacs calls comint-dynamic-complete when the TAB key is pressed in a shell.
 ;; This is set up in shell-mode-map.
 ;;
-;; comint-dynamic-complete calls the functions in  comint-dynamic-complete-functions,
-;; until one of them returns non-nil.
+;; comint-dynamic-complete calls the functions in
+;; comint-dynamic-complete-functions, until one of them returns
+;; non-nil.
 ;;
 ;; comint-dynamic-complete-functions is a good thing to set in the mode hook.
 ;;
@@ -665,14 +664,14 @@ This insures we get and display the prompt.
 
 
 ;; (defun powershell-dynamic-complete-command ()
-;;   "Dynamically complete the command at point.
-;; This function is similar to `comint-dynamic-complete-filename', except that it
-;; searches the commands from powershell and then the `exec-path' (minus the
-;; trailing Emacs library path)  for completion
-;; candidates.
+;;   "Dynamically complete the command at point.  This function is
+;; similar to `comint-dynamic-complete-filename', except that it
+;; searches the commands from powershell and then the `exec-path'
+;; (minus the trailing Emacs library path) for completion candidates.
 
-;; Completion is dependent on the value of `shell-completion-execonly', plus
-;; those that effect file completion.  See `powershell-dynamic-complete-as-command'.
+;; Completion is dependent on the value of
+;; `shell-completion-execonly', plus those that effect file
+;; completion.  See `powershell-dynamic-complete-as-command'.
 
 ;; Returns t if successful."
 ;;   (interactive)
