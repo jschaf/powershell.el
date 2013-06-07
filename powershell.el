@@ -1027,6 +1027,7 @@ The function gets defined in powershell upon powershell startup."
        (concat powershell--set-window-width-fn-name
                "('" ps-width "')")))))
 
+;;;###autoload
 (defun powershell (&optional buffer prompt-string)
   "Run an inferior PowerShell.
 If BUFFER is non-nil, use it to hold the powershell
