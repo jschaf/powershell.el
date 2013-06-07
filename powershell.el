@@ -5,7 +5,11 @@
 ;;               http://www.emacswiki.org/emacs/Rick_Bielawski
 
 ;; Author: Frédéric Perrin <frederic (dot) perrin (arobas) resel (dot) fr>
-;; Keywords: Powershell, Monad, MSH
+;; URL: http://github.com/jschaf/powershell.el
+;; Version: 0.2
+;; Keywords: powershell, languages
+
+;; This file is NOT part of GNU Emacs.
 
 ;; This file is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published
@@ -20,28 +24,46 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with GNU Emacs.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Installation:
+
+;; Place powershell.el on your `load-path' by adding the following
+;; code to your `user-init-file', which is usually ~/.emacs.d/init.el
+;; or ~/.emacs.
+;;
+;; (add-to-list 'load-path "~/path/to/powershell")
+;;
 
 ;;; Commentary:
 
+;; Powershell.el is a combination of powershell.el by Dino Chiesa
+;; <dpchiesa@hotmail.com> and powershell-mode.el by Frédéric Perrin
+;; and Richard Bielawski.  Joe Schafer combined the work into a single
+;; file.
+
 ;;; Frédéric Perrin Comments:
-;; This was written from scratch, without using Vivek Sharma's code:
-;; it had issues I wanted to correct, but unfortunately there were no
-;; licence indication, and Vivek didn't answered my mails.
+;;
+;; The original powershell-mode.el was written from scratch, without
+;; using Vivek Sharma's code: it had issues I wanted to correct, but
+;; unfortunately there were no licence indication, and Vivek didn't
+;; answered my mails.
 ;;
 ;;; Rick Bielawski Comments 2012/09/28:
-;; On March 31, 2012 Frédéric gave me permission to take over support.
-;; I've added support for multi-line comments and here-strings as well
-;; as enhancement/features such as:
-;; Functions to quote, unquote and escape a selection, and one to wrap
-;; a selection in $().  Meanwhile I hope I didn't break anything.
 ;;
-;; Joe Schafer Comments 2013-06-06: I combined powershell.el and
-;; powershell-mode.el.  Since powershell.el was licensed with the new
-;; BSD license I can combine the two files using the more restrictive
-;; license, the GPL.  I also cleaned up the documentation and
-;; reorganized some of the code.
+;; On March 31, 2012 Frédéric gave me permission to take over support
+;; for powershell-mode.el.  I've added support for multi-line comments
+;; and here-strings as well as enhancement/features such as: Functions
+;; to quote, unquote and escape a selection, and one to wrap a
+;; selection in $().  Meanwhile I hope I didn't break anything.
 ;;
-;;; Updates
+;; Joe Schafer Comments 2013-06-06:
+;;
+;; I combined powershell.el and powershell-mode.el.  Since
+;; powershell.el was licensed with the new BSD license I combined the
+;; two files using the more restrictive license, the GPL.  I also
+;; cleaned up the documentation and reorganized some of the code.
+
+;;; Updates:
+
 ;; 2012/10/01 Fixed several bugs in highlighting variables and types.
 ;;            Renamed some variables to be more descriptive.
 ;; 2012/10/02 Enhanced PowerShell-mode indenting & syntax table.
@@ -54,6 +76,7 @@
 
 (eval-when-compile (require 'thingatpt))
 (eval-when-compile (require 'speedbar))
+(require 'shell)
 (require 'compile nil t)
 
 ;;;###autoload
@@ -740,94 +763,10 @@ that value is non-nil."
   (powershell-setup-eldoc))
 
 
-;;; Powershell - run an inferior shell with powershell
-
-
-;;;; powershell.el --- run powershell as an inferior shell in emacs
-;;
-;; Author     : Dino Chiesa <dpchiesa@hotmail.com>
-;; Created    : 10 Apr 2008
-;; Modified   : May 2010
-;; Version    : 0.2.4
-;; Keywords   : powershell shell ms-windows
-;; X-URL      : http://www.emacswiki.org/emacs/PowerShell#toc3
-;; Last-saved : <2011-February-17 12:10:59>
-;;
-
-;;; Commentary:
-;;
-;; Run Windows PowerShell v1.0 or v2.0 as an inferior shell within
-;; Emacs.  Tested with Emacs v22.2 and v23.2.
-;;
-;; To use it, M-x powershell.
-;;
-;; ==============
-;;
-;; TODO:
-;;
-;; - get TAB to do proper completion for powershell commands, filenames,
-;;   etc.
-;;
-;;
-
-;;; Versions:
-;;
-;;    0.1.0 - Initial release.
-;;    0.2.4 - make powershell fn an autoload.
-;;          - fixed problem where running a single shell, caused all
-;;            future shells to be powershell.  This meant reverting to
-;;            the original value of explicit-shell-file-name after
-;;            invoking `shell'.
-;;          - make location of powershell specifiable, via defcustom
-;;            `powershell-location-of-exe'. Also turn a few other defvar
-;;            into defcustom.
-;;          - fix "Marker does not point anywhere" problem in
-;;            `ansi-color-apply-on-region'.
-;;
-
-;;; License:
-;;
-;; This code is distributed under the New BSD License.
-;;
-;; Copyright (c) 2008-2010, Dino Chiesa
-;; All rights reserved.
-;;
-;; Redistribution and use in source and binary forms, with or without
-;; modification, are permitted provided that the following conditions
-;; are met:
-;;
-;; Redistributions of source code must retain the above copyright
-;; notice, this list of conditions and the following disclaimer.
-;;
-;; Redistributions in binary form must reproduce the above copyright
-;; notice, this list of conditions and the following disclaimer in the
-;; documentation and/or other materials provided with the distribution.
-;;
-;; Neither the name of the author or any contributors, nor the names of
-;; any organizations they belong to, may be used to endorse or promote
-;; products derived from this software without specific prior written
-;; permission.
-;;
-;; THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-;; "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-;; LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-;; A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-;; HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
-;; INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
-;; BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS
-;; OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED
-;; AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
-;; LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
-;; WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-;; POSSIBILITY OF SUCH DAMAGE.
-;;
-;;
-
-(require 'shell)
+;;; Powershell inferior mode
 
 ;; TODO: set this programmatically, relying on %WINDIR%
 ;;; Code:
-
 (defcustom powershell-location-of-exe
   "c:\\windows\\system32\\WindowsPowerShell\\v1.0\\powershell.exe"
   "A string, providing the location of the Powershell.exe."
@@ -1432,6 +1371,6 @@ This insures we get and display the prompt."
 ;; lexical-binding: t
 ;; End:
 
-(provide 'powershell-mode)
+(provide 'powershell)
 
-;;; powershell-mode.el ends here
+;;; powershell.el ends here
