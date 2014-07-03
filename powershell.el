@@ -1,10 +1,10 @@
-;;; powershell-mode.el --- Mode for editing Powershell scripts
+;;; powershell.el --- Mode for editing Powershell scripts  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2009, 2010 Frédéric Perrin
+;; Copyright (C) 2009, 2010 Frï¿½dï¿½ric Perrin
 ;; Copyright (C) 2012 Richard Bielawski rbielaws-at-i1-dot-net
 ;;               http://www.emacswiki.org/emacs/Rick_Bielawski
 
-;; Author: Frédéric Perrin <frederic (dot) perrin (arobas) resel (dot) fr>
+;; Author: Frï¿½dï¿½ric Perrin <frederic (dot) perrin (arobas) resel (dot) fr>
 ;; URL: http://github.com/jschaf/powershell.el
 ;; Version: 0.2
 ;; Keywords: powershell, languages
@@ -36,11 +36,11 @@
 ;;; Commentary:
 
 ;; Powershell.el is a combination of powershell.el by Dino Chiesa
-;; <dpchiesa@hotmail.com> and powershell-mode.el by Frédéric Perrin
+;; <dpchiesa@hotmail.com> and powershell-mode.el by Frï¿½dï¿½ric Perrin
 ;; and Richard Bielawski.  Joe Schafer combined the work into a single
 ;; file.
 
-;;; Frédéric Perrin Comments:
+;;; Frï¿½dï¿½ric Perrin Comments:
 ;;
 ;; The original powershell-mode.el was written from scratch, without
 ;; using Vivek Sharma's code: it had issues I wanted to correct, but
@@ -49,7 +49,7 @@
 ;;
 ;;; Rick Bielawski Comments 2012/09/28:
 ;;
-;; On March 31, 2012 Frédéric gave me permission to take over support
+;; On March 31, 2012 Frï¿½dï¿½ric gave me permission to take over support
 ;; for powershell-mode.el.  I've added support for multi-line comments
 ;; and here-strings as well as enhancement/features such as: Functions
 ;; to quote, unquote and escape a selection, and one to wrap a
@@ -116,7 +116,7 @@ with a backtick or a pipe"
     (forward-line -1)
     (looking-at powershell-continued-regexp)))
 
-;; Rick added significant complexity to Frédéric's original version
+;; Rick added significant complexity to Frï¿½dï¿½ric's original version
 (defun powershell-indent-line-amount ()
   "Return the column to which the current line ought to be indented."
   (interactive)
@@ -1366,10 +1366,6 @@ This insures we get and display the prompt."
 ;;                (not (file-directory-p (comint-match-partial-filename))))
 ;;           (insert " "))
 ;;       success)))
-
-;; Local Variables:
-;; lexical-binding: t
-;; End:
 
 (provide 'powershell)
 
