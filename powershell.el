@@ -996,7 +996,6 @@ See the help for `shell' for more details.  \(Type
     ;; Does this need to be tunable?
 
     (setq explicit-shell-file-name powershell-location-of-exe)
-    (setq explicit-powershell.exe-args '("-Command" "-" ))
     (shell buffer)
     (setq explicit-shell-file-name tmp-shellfile))
 
