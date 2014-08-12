@@ -75,9 +75,8 @@
 ;;; Code:
 
 (eval-when-compile (require 'thingatpt))
-(eval-when-compile (require 'speedbar))
 (require 'shell)
-(require 'compile nil t)
+(require 'compile)
 
 ;;;###autoload
 (add-to-list 'auto-mode-alist (cons (purecopy "\\.ps1\\'")  'powershell-mode))
