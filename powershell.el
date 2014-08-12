@@ -1,10 +1,10 @@
 ;;; powershell.el --- Mode for editing Powershell scripts  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2009, 2010 Fr�d�ric Perrin
+;; Copyright (C) 2009, 2010 Frédéric Perrin
 ;; Copyright (C) 2012 Richard Bielawski rbielaws-at-i1-dot-net
 ;;               http://www.emacswiki.org/emacs/Rick_Bielawski
 
-;; Author: Fr�d�ric Perrin <frederic (dot) perrin (arobas) resel (dot) fr>
+;; Author: Frédéric Perrin <frederic (dot) perrin (arobas) resel (dot) fr>
 ;; URL: http://github.com/jschaf/powershell.el
 ;; Version: 0.2
 ;; Keywords: powershell, languages
@@ -36,11 +36,11 @@
 ;;; Commentary:
 
 ;; Powershell.el is a combination of powershell.el by Dino Chiesa
-;; <dpchiesa@hotmail.com> and powershell-mode.el by Fr�d�ric Perrin
+;; <dpchiesa@hotmail.com> and powershell-mode.el by Frédéric Perrin
 ;; and Richard Bielawski.  Joe Schafer combined the work into a single
 ;; file.
 
-;;; Fr�d�ric Perrin Comments:
+;;; Frédéric Perrin Comments:
 ;;
 ;; The original powershell-mode.el was written from scratch, without
 ;; using Vivek Sharma's code: it had issues I wanted to correct, but
@@ -49,7 +49,7 @@
 ;;
 ;;; Rick Bielawski Comments 2012/09/28:
 ;;
-;; On March 31, 2012 Fr�d�ric gave me permission to take over support
+;; On March 31, 2012 Frédéric gave me permission to take over support
 ;; for powershell-mode.el.  I've added support for multi-line comments
 ;; and here-strings as well as enhancement/features such as: Functions
 ;; to quote, unquote and escape a selection, and one to wrap a
