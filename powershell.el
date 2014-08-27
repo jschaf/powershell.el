@@ -107,6 +107,17 @@ Ending either with an explicit backtick, or with a pipe."
   :type 'integer
   :group 'powershell)
 
+;; Note: There are no explicit references to the variable
+;; `explicit-powershell.exe-args'.  It is used implicitly by M-x shell
+;; when the shell is `powershell.exe'.  See
+;; http://blogs.msdn.com/b/dotnetinterop/archive/2008/04/10/run-powershell-as-a-shell-within-emacs.aspx
+;; for details.
+(defcustom explicit-powershell.exe-args '("-Command" "-" )
+  "Args passed to inferior shell by \\[shell], if the shell is powershell.exe.
+Value is a list of strings, which may be nil."
+  :type '(repeat (string :tag "Argument"))
+  :group 'powershell)
+
 (defun powershell-continuation-line-p ()
   "Return t is the current line is a continuation line.
 The current line is a continued line when the previous line ends
