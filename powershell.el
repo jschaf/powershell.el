@@ -127,7 +127,7 @@ with a backtick or a pipe"
     (forward-line -1)
     (looking-at powershell-continued-regexp)))
 
-;; Rick added significant complexity to Fr�d�ric's original version
+;; Rick added significant complexity to Frédéric's original version
 (defun powershell-indent-line-amount ()
   "Return the column to which the current line ought to be indented."
   (interactive)
@@ -576,12 +576,12 @@ characters that can't be set by the `syntax-table' alone.")
     (modify-syntax-entry ?-  "_" powershell-mode-syntax-table)
     (modify-syntax-entry ?^  "_" powershell-mode-syntax-table)
     (modify-syntax-entry ?\\ "_" powershell-mode-syntax-table)
-    (modify-syntax-entry ?{ "(}" powershell-mode-syntax-table)
-    (modify-syntax-entry ?} "){" powershell-mode-syntax-table)
-    (modify-syntax-entry ?[ "(]" powershell-mode-syntax-table)
-    (modify-syntax-entry ?] ")[" powershell-mode-syntax-table)
-    (modify-syntax-entry ?( "()" powershell-mode-syntax-table)
-    (modify-syntax-entry ?) ")(" powershell-mode-syntax-table)
+    (modify-syntax-entry ?\{ "(}" powershell-mode-syntax-table)
+    (modify-syntax-entry ?\} "){" powershell-mode-syntax-table)
+    (modify-syntax-entry ?\[ "(]" powershell-mode-syntax-table)
+    (modify-syntax-entry ?\] ")[" powershell-mode-syntax-table)
+    (modify-syntax-entry ?\( "()" powershell-mode-syntax-table)
+    (modify-syntax-entry ?\) ")(" powershell-mode-syntax-table)
     (modify-syntax-entry ?` "\\" powershell-mode-syntax-table)
     (modify-syntax-entry ?_  "w" powershell-mode-syntax-table)
     (modify-syntax-entry ?=  "." powershell-mode-syntax-table)
