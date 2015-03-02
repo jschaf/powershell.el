@@ -312,16 +312,10 @@ The text is assumed to be `regexp-opt' output."
 (defvar powershell-keywords
   (concat "\\_<"
           (regexp-opt
-           '("begin"         "break"         "catch"
-             "continue"      "data"          "do"
-             "default"       "dynamicparam"  "else"
-             "elseif"        "end"           "exit"
-             "filter"        "finally"       "for"
-             "foreach"       "from"          "function"
-             "if"            "in"            "param"
-             "process"       "return"        "switch"
-             "throw"         "trap"          "try"
-             "until"         "where"         "while")
+           '("begin" "break" "catch" "class" "continue" "data" "do" "default"
+             "dynamicparam" "else" "elseif" "end" "enum" "exit" "filter" "finally"
+             "for" "foreach" "from" "function" "if" "in" "param" "process"
+             "return" "switch" "throw" "trap" "try" "until" "where" "while")
            t)
           "\\_>")
   "Powershell keywords.")
