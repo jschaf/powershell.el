@@ -213,7 +213,7 @@ Remove doubled single quotes as we go."
   (goto-char beg)
   (cond ((looking-at "'")
          (goto-char end)
-         (when (looking-back "'")
+         (when (looking-back "'" nil)
            (delete-char -1)
            (setq end (1- end))
            (goto-char beg)
@@ -225,7 +225,7 @@ Remove doubled single quotes as we go."
              (setq end (1- end)))))
         ((looking-at "\"")
          (goto-char end)
-         (when (looking-back "\"")
+         (when (looking-back "\"" nil)
            (delete-char -1)
            (setq end (1- end))
            (goto-char beg)
@@ -439,7 +439,7 @@ Returns match 3 and optionally match 4 for #/eol comments.
 Match 4 is returned only if eol is found before LIMIT"
   (when (search-forward "#" limit t)
     (cond
-     ((looking-back "<#")
+     ((looking-back "<#" nil)
       (set-match-data (list (match-beginning 0) (1+ (match-beginning 0))
                             (match-beginning 0) (1+ (match-beginning 0)))))
      ((looking-at ">")
@@ -469,7 +469,7 @@ Returns match 3 and match 4 for @\" \"@ sequences respectively."
       (set-match-data (list (match-beginning 0) (1+ (match-beginning 0))
                             (match-beginning 0) (1+ (match-beginning 0))))
       (forward-char))
-     ((looking-back "^'@")
+     ((looking-back "^'@" nil)
       (set-match-data (list (1- (match-end 0)) (match-end 0)
                             nil nil
                             (1- (match-end 0)) (match-end 0))))
@@ -479,7 +479,7 @@ Returns match 3 and match 4 for @\" \"@ sequences respectively."
                             nil nil
                             (match-beginning 0) (1+ (match-beginning 0))))
       (forward-char))
-     ((looking-back "^\"@")
+     ((looking-back "^\"@" nil)
       (set-match-data (list (1- (match-end 0)) (match-end 0)
                             nil nil
                             nil nil
