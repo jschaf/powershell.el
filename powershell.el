@@ -1119,7 +1119,7 @@ See the help for `shell' for more details.  \(Type
 (defadvice ansi-color-apply-on-region (around
                                        powershell-throttle-ansi-colorizing
                                        (begin end)
-                                       activate compile)
+                                       compile)
   (progn
     (let ((start-pos (marker-position begin)))
     (cond
