@@ -23,7 +23,7 @@ Then install `powershell.el`:
 
 **El-Get**
 
-**PENDING**: `powershell.el` is included in the El-Get repository
+`powershell.el` is included in the El-Get repository
 
 Install powershell.el:
 
