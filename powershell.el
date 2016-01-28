@@ -725,9 +725,7 @@ Where <fcn-name> is the name of the function to which <helper string> applies.
     ;; imenu doc says these are buffer-local by default
     (setq imenu-generic-expression powershell-imenu-expression)
     (setq imenu-case-fold-search nil)
-    (imenu-add-menubar-index)
-    (when (require 'which-func nil t)
-      (which-function-mode t))))
+    (imenu-add-menubar-index)))
 
 (when (require 'speedbar nil t)
   (declare-function speedbar-add-supported-extension "speedbar")
