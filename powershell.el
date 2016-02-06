@@ -80,7 +80,7 @@
 (require 'compile)
 
 ;;;###autoload
-(add-to-list 'auto-mode-alist (cons (purecopy "\\.ps1\\'")  'powershell-mode))
+(add-to-list 'auto-mode-alist '("\\.ps[dm]?1\\'" . powershell-mode))
 
 
 ;; User Variables
