@@ -995,13 +995,13 @@ See the help for `shell' for more details.  \(Type
 
   (setq buffer (get-buffer-create (or buffer "*PowerShell*")))
   (powershell-log 1 "powershell starting up...in buffer %s" (buffer-name buffer))
-  (let ((tmp-shellfile explicit-shell-file-name))
+  (let ((explicit-shell-file-name (if (eq system-type 'cygwin)
+				      (cygwin-convert-file-name-from-windows powershell-location-of-exe)
+				    powershell-location-of-exe)))
     ;; set arguments for the powershell exe.
     ;; Does this need to be tunable?
 
-    (setq explicit-shell-file-name powershell-location-of-exe)
-    (shell buffer)
-    (setq explicit-shell-file-name tmp-shellfile))
+    (shell buffer))
 
   ;; (powershell--get-max-window-width "*PowerShell*")
   ;; (powershell-invoke-command-silently (get-buffer-process "*csdeshell*")
