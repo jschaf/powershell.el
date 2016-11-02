@@ -818,18 +818,18 @@ emacs has resized its window.")
 
 (defconst powershell--find-max-window-width-command
   (concat
-  "function _Emacs_GetMaxPhsWindowSize \n"
-  "{\n"
-  "  $rawui = (Get-Host).UI.RawUI\n"
-  "  $mpws_exists = ($rawui | Get-Member | ? "
-  "{$_.Name -eq \"MaxPhysicalWindowSize\"})\n"
-  "  if ($mpws_exists -eq $null) {\n"
-  "    \"210\" | Out-Host\n"
-  "  } else {\n"
-  "    $rawui.MaxPhysicalWindowSize.Width | Out-Host\n"
-  "  }\n"
-  "}\n"
-  "_Emacs_GetMaxPhsWindowSize\n")
+  "function _Emacs_GetMaxPhsWindowSize"
+  " {"
+  " $rawui = (Get-Host).UI.RawUI;"
+  " $mpws_exists = ($rawui | Get-Member | Where-Object"
+  " {$_.Name -eq \"MaxPhysicalWindowSize\"});"
+  " if ($mpws_exists -eq $null) {"
+  " 210"
+  " } else {"
+  " $rawui.MaxPhysicalWindowSize.Width"
+  " }"
+  " };"
+  " _Emacs_GetMaxPhsWindowSize")
   "The powershell logic to determine the max physical window width.")
 
 (defconst powershell--set-window-width-fn-name  "_Emacs_SetWindowWidth"
@@ -845,32 +845,27 @@ set the window width. Intended for internal use only.")
   ;; buffer size first.
 
     (concat  "function " powershell--set-window-width-fn-name
-             "([string] $pswidth)\n"
-             "{\n"
-             ;;"  \"resetting window width to $pswidth\n\" | Out-Host\n"
-             "  $rawui = (Get-Host).UI.RawUI\n"
-             "  # retrieve the values\n"
-             "  $bufsize = $rawui.BufferSize\n"
-             "  $winsize = $rawui.WindowSize\n"
-             "  $cwidth = $winsize.Width\n"
-             "  $winsize.Width = $pswidth \n"
-             "  $bufsize.Width = $pswidth\n"
-             "  if ($cwidth -lt $pswidth) {\n"
-             "    # increase the width\n"
-             "    $rawui.BufferSize = $bufsize\n"
-             "    $rawui.WindowSize = $winsize\n"
-             "  }\n"
-             "  elseif ($cwidth -gt $pswidth) {\n"
-             "    # decrease the width\n"
-             "    $rawui.WindowSize = $winsize\n"
-             "    $rawui.BufferSize = $bufsize\n"
-             "  }\n"
-             "  # destroy variables\n"
-             "  Set-Variable -name rawui -value $null\n"
-             "  Set-Variable -name winsize -value $null\n"
-             "  Set-Variable -name bufsize -value $null\n"
-             "  Set-Variable -name cwidth -value $null\n"
-             "}\n\n")
+             "([string] $pswidth)"
+             " {"
+             " $rawui = (Get-Host).UI.RawUI;"
+             " $bufsize = $rawui.BufferSize;"
+             " $winsize = $rawui.WindowSize;"
+             " $cwidth = $winsize.Width;"
+             " $winsize.Width = $pswidth;"
+             " $bufsize.Width = $pswidth;"
+             " if ($cwidth -lt $pswidth) {"
+             " $rawui.BufferSize = $bufsize;"
+             " $rawui.WindowSize = $winsize;"
+             " }"
+             " elseif ($cwidth -gt $pswidth) {"
+             " $rawui.WindowSize = $winsize;"
+             " $rawui.BufferSize = $bufsize;"
+             " };"
+             " Set-Variable -name rawui -value $null;"
+             " Set-Variable -name winsize -value $null;"
+             " Set-Variable -name bufsize -value $null;"
+             " Set-Variable -name cwidth -value $null;"
+             " }")
 
     "The text of the powershell function that will be used at runtime to
 set the width of the virtual Window in PowerShell, as the Emacs window
