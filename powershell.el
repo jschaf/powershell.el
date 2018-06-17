@@ -141,7 +141,8 @@ with a backtick or a pipe"
             (forward-line -1))
           (+ (current-indentation) powershell-continuation-indent))
       ;; otherwise, indent relative to the block's opening char ([{
-      (let ((closing-paren (looking-at "\\s-*\\s)"))
+      ;; \\s- includes newline, which make the line right before closing paren not indented
+      (let ((closing-paren (looking-at "[ \t]*\\s)"))
             new-indent
             block-open-line)
         (condition-case nil
@@ -591,7 +592,6 @@ characters that can't be set by the `syntax-table' alone.")
 (defvar powershell-mode-map
   (let ((powershell-mode-map (make-keymap)))
     ;;    (define-key powershell-mode-map "\r" 'powershell-indent-line)
-    (define-key powershell-mode-map "\t" 'powershell-indent-line)
     (define-key powershell-mode-map (kbd "M-\"")
       'powershell-doublequote-selection)
     (define-key powershell-mode-map (kbd "M-'") 'powershell-quote-selection)
@@ -756,11 +756,14 @@ Where <fcn-name> is the name of the function to which <helper string> applies.
 Entry to this mode calls the value of `powershell-mode-hook' if
 that value is non-nil."
   (powershell-setup-font-lock)
-  (set (make-local-variable 'indent-line-function) 'powershell-indent-line)
-  (set (make-local-variable 'compile-command) powershell-compile-command)
-  (set (make-local-variable 'comment-start) "#")
-  (set (make-local-variable 'comment-start-skip) "#+\\s*")
-  (set (make-local-variable 'parse-sexp-ignore-comments) t)
+  (setq-local indent-line-function 'powershell-indent-line)
+  (setq-local compile-command powershell-compile-command)
+  (setq-local comment-start "#")
+  (setq-local comment-start-skip "#+\\s*")
+  (setq-local parse-sexp-ignore-comments t)
+  ;; Support electric-pair-mode
+  (setq-local electric-indent-chars
+              (append "{}():;," electric-indent-chars))
   (powershell-setup-imenu)
   (powershell-setup-menu)
   (powershell-setup-eldoc))
