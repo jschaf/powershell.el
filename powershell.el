@@ -727,9 +727,10 @@ Where <fcn-name> is the name of the function to which <helper string> applies.
     (setq imenu-case-fold-search nil)
     (imenu-add-menubar-index)))
 
-(when (require 'speedbar nil t)
-  (declare-function speedbar-add-supported-extension "speedbar")
-  (speedbar-add-supported-extension ".ps1?"))
+(defun powershell-setup-speedbar ()
+  "Install `speedbar-add-supported-extension'."
+  (when (require 'speedbar nil t)
+    (speedbar-add-supported-extension ".ps1?")))
 
 ;; A better command would be something like "powershell.exe -NoLogo
 ;; -NonInteractive -Command & (buffer-file-name)". But it will just
@@ -765,6 +766,7 @@ that value is non-nil."
   (setq-local electric-indent-chars
               (append "{}():;," electric-indent-chars))
   (powershell-setup-imenu)
+  (powershell-setup-speedbar)
   (powershell-setup-menu)
   (powershell-setup-eldoc))
 
