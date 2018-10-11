@@ -1,4 +1,4 @@
-;;; powershell.el --- Mode for editing Powershell scripts  -*- lexical-binding: t; -*-
+;;; powershell.el --- Mode for editing PowerShell scripts  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2009, 2010 Frédéric Perrin
 ;; Copyright (C) 2012 Richard Bielawski rbielaws-at-i1-dot-net
@@ -36,7 +36,7 @@
 
 ;;; Commentary:
 
-;; Powershell.el is a combination of powershell.el by Dino Chiesa
+;; powershell.el is a combination of powershell.el by Dino Chiesa
 ;; <dpchiesa@hotmail.com> and powershell-mode.el by Frédéric Perrin
 ;; and Richard Bielawski.  Joe Schafer combined the work into a single
 ;; file.
@@ -319,7 +319,7 @@ The text is assumed to be `regexp-opt' output."
              "return" "switch" "throw" "trap" "try" "until" "where" "while")
            t)
           "\\_>")
-  "Powershell keywords.")
+  "PowerShell keywords.")
 
 ;; Taken from About_Comparison_Operators and some questionable sources :-)
 (defvar powershell-operators
@@ -343,15 +343,15 @@ The text is assumed to be `regexp-opt' output."
              "-begin" "-process" "-end" ;specific to scriptblock
              ) t)
           "\\_>")
-  "Powershell operators.")
+  "PowerShell operators.")
 
 (defvar powershell-scope-names
   '("global"   "local"    "private"  "script"   )
-  "Names of scopes in Powershell mode.")
+  "Names of scopes in PowerShell mode.")
 
 (defvar powershell-variable-drive-names
   (append '("env" "function" "variable" "alias") powershell-scope-names)
-  "Names of scopes in Powershell mode.")
+  "Names of scopes in PowerShell mode.")
 
 (defconst powershell-variables-regexp
   ;; There are 2 syntaxes detected: ${[scope:]name} and $[scope:]name
@@ -411,7 +411,7 @@ The text is assumed to be `regexp-opt' output."
      "ShellId"                        "SourceArgs"
      "SourceEventArgs"                "StackTrace"
      "this"                           "true"                           ) t)
-  "The names of the built-in Powershell variables.
+  "The names of the built-in PowerShell variables.
 They are highlighted differently from the other variables.")
 
 (defvar powershell-config-variables-regexp
@@ -506,7 +506,7 @@ characters that can't be set by the `syntax-table' alone.")
     (,powershell-operators . font-lock-builtin-face)
     ;; the REQUIRES mark
     ("^#\\(REQUIRES\\)" 1 font-lock-warning-face t))
-  "Keywords for the first level of font-locking in Powershell mode.")
+  "Keywords for the first level of font-locking in PowerShell mode.")
 
 (defvar powershell-font-lock-keywords-2
   (append
@@ -516,7 +516,7 @@ characters that can't be set by the `syntax-table' alone.")
       0 font-lock-builtin-face t)
      (,(concat "\\$\\(" powershell-config-variables-regexp "\\)\\>")
       0 font-lock-builtin-face t)))
-  "Keywords for the second level of font-locking in Powershell mode.")
+  "Keywords for the second level of font-locking in PowerShell mode.")
 
 (defvar powershell-font-lock-keywords-3
   (append
@@ -535,7 +535,7 @@ characters that can't be set by the `syntax-table' alone.")
      (,powershell-function-names-regex
       (0 font-lock-function-name-face)
       (1 (cons font-lock-type-face '(underline)) t t))))
-  "Keywords for the maximum level of font-locking in Powershell mode.")
+  "Keywords for the maximum level of font-locking in PowerShell mode.")
 
 
 (defun powershell-setup-font-lock ()
@@ -771,13 +771,13 @@ that value is non-nil."
   (powershell-setup-eldoc))
 
 
-;;; Powershell inferior mode
+;;; PowerShell inferior mode
 
 ;; TODO: set this programmatically, relying on %WINDIR%
 ;;; Code:
 (defcustom powershell-location-of-exe
   "c:\\windows\\system32\\WindowsPowerShell\\v1.0\\powershell.exe"
-  "A string, providing the location of the Powershell.exe."
+  "A string, providing the location of the powershell.exe."
   :group 'powershell)
 
 (defcustom powershell-log-level 3
@@ -795,7 +795,7 @@ newlines and formatting removed. Set this to true, to do that."
 
 (defvar powershell-prompt-regex  "PS [^#$%>]+> "
   "Regexp to match the powershell prompt.
-Powershell.el uses this regex to determine when a command has
+powershell.el uses this regex to determine when a command has
 completed.  Therefore, you need to set this appropriately if you
 explicitly change the prompt function in powershell.  Any value
 should include a trailing space, if the powershell prompt uses a
@@ -814,7 +814,7 @@ once, when the powershell starts up.")
 
 (defvar powershell-command-timeout-seconds 12
   "The timeout for a powershell command.
-Powershell.el will wait this long before giving up.")
+powershell.el will wait this long before giving up.")
 
 (defvar powershell--need-rawui-resize t
   "No need to fuss with this.  It's intended for internal use
@@ -1260,7 +1260,7 @@ emitted when a PS command completes. This makes it difficult for
 a comint mode to determine when the command has completed.
 Therefore, we send an explicit request for the prompt, after
 sending the actual (primary) command. When the primary command
-completes, Powershell then responds to the \"prompt\" command,
+completes, PowerShell then responds to the \"prompt\" command,
 and emits the prompt.
 
 This insures we get and display the prompt."
@@ -1268,7 +1268,7 @@ This insures we get and display the prompt."
   ;; this by calling a resize function in the PowerShell, before sending
   ;; the user-entered command to the shell.
   ;;
-  ;; Powershell keeps track of its \"console\", and formats its output
+  ;; PowerShell keeps track of its \"console\", and formats its output
   ;; according to the width it thinks it is using.  This is true even when
   ;; powershell is invoked with the - argument, which tells it to use
   ;; stdin as input.
