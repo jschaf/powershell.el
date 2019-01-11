@@ -429,7 +429,8 @@ They are highlighted differently from the other variables.")
   (regexp-opt
    '("ConfirmPreference"           "DebugPreference"
      "ErrorActionPreference"       "ErrorView"
-     "FormatEnumerationLimit"      "LogCommandHealthEvent"
+     "FormatEnumerationLimit"      "InformationPreference"
+     "LogCommandHealthEvent"
      "LogCommandLifecycleEvent"    "LogEngineHealthEvent"
      "LogEngineLifecycleEvent"     "LogProviderHealthEvent"
      "LogProviderLifecycleEvent"   "MaximumAliasCount"
@@ -437,7 +438,8 @@ They are highlighted differently from the other variables.")
      "MaximumFunctionCount"        "MaximumHistoryCount"
      "MaximumVariableCount"        "OFS"
      "OutputEncoding"              "ProgressPreference"
-     "PSEmailServer"               "PSSessionApplicationName"
+     "PSDefaultParameterValues"    "PSEmailServer"
+     "PSModuleAutoLoadingPreference" "PSSessionApplicationName"
      "PSSessionConfigurationName"  "PSSessionOption"
      "VerbosePreference"           "WarningPreference"
      "WhatIfPreference"            ) t)
