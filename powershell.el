@@ -356,7 +356,7 @@ The text is assumed to be `regexp-opt' output."
   "Names of scopes in PowerShell mode.")
 
 (defvar powershell-variable-drive-names
-  (append '("env" "function" "variable" "alias") powershell-scope-names)
+  (append '("env" "function" "variable" "alias" "hklm" "hkcu" "wsman") powershell-scope-names)
   "Names of scopes in PowerShell mode.")
 
 (defconst powershell-variables-regexp
