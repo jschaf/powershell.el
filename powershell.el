@@ -330,14 +330,18 @@ The text is assumed to be `regexp-opt' output."
              "-ceq" "-cne" "-cgt" "-cge" "-clt" "-cle"
              ;; explicitly case insensitive
              "-ieq" "-ine" "-igt" "-ige" "-ilt" "-ile"
-             "-band" "-bor" "-bxor"
-             "-and" "-or" "-xor"
+             "-band" "-bor" "-bxor" "-bnot"
+             "-and" "-or" "-xor" "-not" "!"
              "-like" "-notlike" "-clike" "-cnotlike" "-ilike" "-inotlike"
              "-match" "-notmatch" "-cmatch" "-cnotmatch" "-imatch" "-inotmatch"
              "-contains" "-notcontains" "-ccontains" "-cnotcontains"
              "-icontains" "-inotcontains"
              "-replace" "-creplace" "-ireplace"
-             "-is" "-as" "-f"
+             "-is" "-isnot" "-as" "-f"
+             "-in" "-cin" "-iin" "-notin" "-cnotin" "-inotin"
+             "-split" "-csplit" "-isplit"
+             "-join"
+             "-shl" "-shr"
              ;; Questionable --> specific to certain contexts
              "-casesensitive" "-wildcard" "-regex" "-exact" ;specific to case
              "-begin" "-process" "-end" ;specific to scriptblock
