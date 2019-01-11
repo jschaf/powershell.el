@@ -313,10 +313,12 @@ The text is assumed to be `regexp-opt' output."
 (defvar powershell-keywords
   (concat "\\_<"
           (regexp-opt
-           '("begin" "break" "catch" "class" "continue" "data" "do" "default"
+           '("begin" "break" "catch" "class" "continue" "data" "define" "do" "default"
              "dynamicparam" "else" "elseif" "end" "enum" "exit" "filter" "finally"
-             "for" "foreach" "from" "function" "if" "in" "param" "process"
-             "return" "switch" "throw" "trap" "try" "until" "where" "while")
+             "for" "foreach" "from" "function" "hidden" "if" "in" "param" "process"
+             "return" "static" "switch" "throw" "trap" "try" "until" "using" "var" "where" "while"
+             ;; Questionable, specific to workflow sessions
+             "inlinescript")
            t)
           "\\_>")
   "PowerShell keywords.")
