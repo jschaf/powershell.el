@@ -108,7 +108,7 @@ Ending either with an explicit backtick, or with a pipe."
   :group 'powershell)
 
 ;; Note: There are no explicit references to the variable
-;; `explicit-powershell-args'.  It is used implicitly by M-x shell
+;; `explicit-powershell.exe-args'.  It is used implicitly by M-x shell
 ;; when the shell is `powershell.exe'.  See
 ;; http://blogs.msdn.com/b/dotnetinterop/archive/2008/04/10/run-powershell-as-a-shell-within-emacs.aspx
 ;; for details.
