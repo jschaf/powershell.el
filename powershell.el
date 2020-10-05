@@ -789,20 +789,23 @@ that value is non-nil."
 (defcustom powershell-location-of-exe
    (or (executable-find "powershell") (executable-find "pwsh"))
   "A string, providing the location of the powershell executable."
-  :group 'powershell)
+  :group 'powershell
+  :type 'string)
 
 (defcustom powershell-log-level 3
   "The current log level for powershell internal operations.
 0 = NONE, 1 = Info, 2 = VERBOSE, 3 = DEBUG."
-  :group 'powershell)
+  :group 'powershell
+  :type 'integer)
 
 (defcustom powershell-squish-results-of-silent-commands t
-"The function `powershell-invoke-command-silently' returns the results
+  "The function `powershell-invoke-command-silently' returns the results
 of a command in a string.  PowerShell by default, inserts newlines when
 the output exceeds the configured width of the powershell virtual
 window. In some cases callers might want to get the results with the
 newlines and formatting removed. Set this to true, to do that."
-:group 'powershell)
+  :group 'powershell
+  :type 'boolean)
 
 (defvar powershell-prompt-regex  "PS [^#$%>]+> "
   "Regexp to match the powershell prompt.
