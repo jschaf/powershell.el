@@ -787,8 +787,11 @@ that value is non-nil."
 
 ;;; Code:
 (defcustom powershell-location-of-exe
-   (or (executable-find "powershell") (executable-find "pwsh"))
-  "A string, providing the location of the powershell executable."
+   (or (executable-find "pwsh") (executable-find "powershell"))
+  "A string providing the location of the powershell executable. Since
+the newer PowerShell Core (pwsh.exe) does not replace the older Windows
+PowerShell (powershell.exe) when installed, this attempts to find the
+former first, and only if it doesn't exist, falls back to the latter."
   :group 'powershell
   :type 'string)
 
