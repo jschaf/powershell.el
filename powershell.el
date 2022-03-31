@@ -1012,7 +1012,8 @@ See the help for `shell' for more details.  \(Type
 
   (setq buffer (get-buffer-create (or buffer "*PowerShell*")))
   (powershell-log 1 "powershell starting up...in buffer %s" (buffer-name buffer))
-  (let ((explicit-shell-file-name (if (eq system-type 'cygwin)
+  (let ((explicit-shell-file-name (if (and (eq system-type 'cygwin)
+                                           (fboundp 'cygwin-convert-file-name-from-windows))
 				      (cygwin-convert-file-name-from-windows powershell-location-of-exe)
 				    powershell-location-of-exe)))
     ;; set arguments for the powershell exe.
@@ -1060,8 +1061,9 @@ See the help for `shell' for more details.  \(Type
 
     ;; add the hook that sets the flag
     (add-hook 'window-size-change-functions
-              '(lambda (&optional x)
-                 (setq powershell--need-rawui-resize t)))
+              #'(lambda (&rest args)
+                  (ignore args)
+                  (setq powershell--need-rawui-resize t)))
 
     ;; set the flag so we resize properly the first time.
     (setq powershell--need-rawui-resize t)
