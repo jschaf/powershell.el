@@ -1061,8 +1061,7 @@ See the help for `shell' for more details.  \(Type
 
     ;; add the hook that sets the flag
     (add-hook 'window-size-change-functions
-              #'(lambda (&rest args)
-                  (ignore args)
+              #'(lambda (&rest _)
                   (setq powershell--need-rawui-resize t)))
 
     ;; set the flag so we resize properly the first time.
