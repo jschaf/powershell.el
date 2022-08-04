@@ -541,7 +541,7 @@ characters that can't be set by the `syntax-table' alone.")
       (2 (cons font-lock-type-face '(underline)) t t))
      ;; function argument names
      (,powershell-function-switch-names-regexp
-      (0 font-lock-reference-face)
+      (0 font-lock-constant-face)
       (1 (cons font-lock-type-face '(underline)) t t)
       (2 (cons font-lock-type-face '(underline)) t t))
      ;; function names
