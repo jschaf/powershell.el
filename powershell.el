@@ -734,7 +734,7 @@ Where <fcn-name> is the name of the function to which <helper string> applies.
 
 (defun powershell-setup-imenu ()
   "Install `powershell-imenu-expression'."
-  (when (require 'imenu nil t)
+  (when (fboundp 'imenu-add-menubar-index)
     ;; imenu doc says these are buffer-local by default
     (setq imenu-generic-expression powershell-imenu-expression)
     (setq imenu-case-fold-search nil)
@@ -742,7 +742,7 @@ Where <fcn-name> is the name of the function to which <helper string> applies.
 
 (defun powershell-setup-speedbar ()
   "Install `speedbar-add-supported-extension'."
-  (when (require 'speedbar nil t)
+  (when (fboundp 'speedbar-add-supported-extension)
     (speedbar-add-supported-extension ".ps1?")))
 
 ;; A better command would be something like "powershell.exe -NoLogo
