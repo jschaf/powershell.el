@@ -118,6 +118,15 @@ Value is a list of strings, which may be nil."
   :type '(repeat (string :tag "Argument"))
   :group 'powershell)
 
+(defcustom powershell-default-langserver-path
+  (expand-file-name ".cache/powershell/" user-emacs-directory)
+  "Default expression used to locate Powershell Languageserver.
+If found, added to eglot.  Supports environment-variables and glob-pattterns.
+Changes may require an Emacs-restart to take effect."
+  :type 'string
+  :group 'powershell)
+
+
 (defun powershell-continuation-line-p ()
   "Return t is the current line is a continuation line.
 The current line is a continued line when the previous line ends
@@ -1386,6 +1395,78 @@ This insures we get and display the prompt."
 ;;                (not (file-directory-p (comint-match-partial-filename))))
 ;;           (insert " "))
 ;;       success)))
+
+(defun powershell--fetch-json-array (url)
+  "Fetch JSON from URL, extract first array element, and return PROPERTY."
+  (with-current-buffer (url-retrieve-synchronously url t)
+    (goto-char (point-min))
+    (re-search-forward "\n\n")  ;; Skip headers
+    (let* ((json-array (json-parse-buffer :array-type 'list)))
+      json-array)))
+
+(defun powershell--unzip-file (zip-file destination)
+  "Unzip ZIP-FILE into DESTINATION directory using the 'unzip' shell command."
+  (unless (file-directory-p destination)
+    (make-directory destination :parents))  ;; Ensure the destination directory exists
+  (let ((exit-code (call-process "unzip" nil nil nil "-o" zip-file "-d" destination)))
+    (if (zerop exit-code)
+        (message "Successfully unzipped %s to %s" zip-file destination)
+      (error "Failed to unzip %s (exit code %d)" zip-file exit-code))))
+
+(defun powershell--get-latest-release-version ()
+  (let* ((release-json (powershell--fetch-json-array "https://api.github.com/repos/PowerShell/PowerShellEditorServices/releases"))
+         (first        (car release-json)) ;; assume first = latest
+         (version      (gethash "tag_name" first)))
+    version))
+
+(defun powershell--download-langserver ()
+  (let* ((powershell-dir (expand-file-name ".cache/powershell" user-emacs-directory))
+         (download-dir  (expand-file-name "dl" powershell-dir))
+         (download-file (expand-file-name "powershell-langserver.zip" download-dir)))
+    (make-directory powershell-dir :parents)
+    (make-directory download-dir :parents)
+    (let* ((version     (powershell--get-latest-release-version))
+           (url         (format "https://github.com/PowerShell/PowerShellEditorServices/releases/download/%s/PowerShellEditorServices.zip" version)))
+      (url-copy-file url download-file 't)
+      (powershell--unzip-file download-file powershell-dir)
+      (delete-directory download-dir t)
+      ;; make our function respond with something more interesting than nil :)
+      (message (format "Powershell LangServer version %s downloaded and unpacked to \'%s\'" version powershell-dir)))))
+
+(defun powershell-install-langserver ()
+  "Downloads the lang-server and unpacks it in the default location."
+  (interactive)
+  (powershell--download-langserver)
+  (powershell--register-langserver))
+
+(defun powershell--register-langserver ()
+  (defvar eglot-server-programs)
+  (let* ((langserver-path (powershell-langserver-path))
+         (langserver-exe (expand-file-name "PowerShellEditorServices/Start-EditorServices.ps1" langserver-path)))
+    (and (file-exists-p langserver-exe)
+         (add-to-list 'eglot-server-programs
+                      `(powershell-mode . ("pwsh"
+                                           "-OutputFormat" "Text"
+                                           "-File"
+                                           ,langserver-exe
+                                           "-Stdio"
+                                           "-HostVersion" "1.0"
+                                           "-HostName" "Emacs"
+                                           "-HostProfileId" "Emacs.Eglot"
+                                           "-SessionDetailsPath" "/tmp/emacs"
+                                           "-BundledModulesPath"
+                                           ,langserver-path))))))
+
+
+(defun powershell-langserver-path ()
+  ;; Note: In GNU land, we call this a file name, not a path.
+  (car (file-expand-wildcards
+        (substitute-in-file-name powershell-default-langserver-path))))
+
+;;;###autoload
+(with-eval-after-load 'eglot
+  (powershell--register-langserver))
+
 
 (provide 'powershell)
 
