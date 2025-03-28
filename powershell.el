@@ -1397,7 +1397,7 @@ This insures we get and display the prompt."
 ;;       success)))
 
 (defun powershell--fetch-json-array (url)
-  "Fetch JSON from URL, extract first array element, and return PROPERTY."
+  "Fetch JSON from URL, parse as if array."
   (with-current-buffer (url-retrieve-synchronously url t)
     (goto-char (point-min))
     (re-search-forward "\n\n")  ;; Skip headers
