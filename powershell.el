@@ -1453,7 +1453,8 @@ This insures we get and display the prompt."
                                            "-HostVersion" "1.0"
                                            "-HostName" "Emacs"
                                            "-HostProfileId" "Emacs.Eglot"
-                                           "-SessionDetailsPath" "/tmp/emacs"
+                                           "-SessionDetailsPath"
+                                           ,(expand-file-name "eglot-powershell" temporary-file-directory)
                                            "-BundledModulesPath"
                                            ,langserver-path))))))
 
@@ -1466,7 +1467,6 @@ This insures we get and display the prompt."
 ;;;###autoload
 (with-eval-after-load 'eglot
   (powershell--register-langserver))
-
 
 (provide 'powershell)
 
