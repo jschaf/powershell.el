@@ -1402,9 +1402,8 @@ This insures we get and display the prompt."
 		    (json-parse-buffer :array-type 'list)))
 
 (defun powershell--unzip-file (zip-file destination)
-  "Unzip ZIP-FILE into DESTINATION directory using the 'unzip' shell command."
-  (unless (file-directory-p destination)
-    (make-directory destination :parents))  ;; Ensure the destination directory exists
+  "Unzip ZIP-FILE into DESTINATION directory using the 'unzip' command."
+  (make-directory destination t)  ;; Ensure the destination directory exists
   (let ((exit-code (call-process "unzip" nil nil nil "-o" zip-file "-d" destination)))
     (if (zerop exit-code)
         (message "Successfully unzipped %s to %s" zip-file destination)
