@@ -21,6 +21,13 @@ Then install `powershell.el`:
 
 <kbd>M-x package-install RET powershell RET</kbd>
 
+You can also install the package use `use-package`:
+
+```lisp
+(use-package powershell
+    :ensure t)
+```
+
 **El-Get**
 
 `powershell.el` is included in the El-Get repository
