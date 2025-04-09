@@ -45,6 +45,17 @@ Download `powershell.el` and place the download directory on your
 (add-to-list 'load-path "~/.emacs.d/path/to/powershell")
 ```
 
+eglot & LSP Support
+----------------------
+
+`powershell-mode` has built in support for Language Server Protocol
+(LSP) via `eglot`.
+
+To download the latest language-server and register it with `eglot`,
+simply invoke `M-x powershell-install-langserver`.
+
+Doing this when a version is already installed will overwrite it with
+the latest version available.
 
 History
 -------
