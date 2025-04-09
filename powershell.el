@@ -1438,7 +1438,7 @@ This insures we get and display the prompt."
 
 (defun powershell--register-langserver ()
   (defvar eglot-server-programs)
-  (let* ((langserver-path (powershell-langserver-path))
+  (let* ((langserver-path (powershell-langserver-file-name))
          (langserver-exe (expand-file-name "PowerShellEditorServices/Start-EditorServices.ps1" langserver-path)))
     (and (file-exists-p langserver-exe)
          (add-to-list 'eglot-server-programs
@@ -1456,8 +1456,7 @@ This insures we get and display the prompt."
                                            ,langserver-path))))))
 
 
-(defun powershell-langserver-path ()
-  ;; Note: In GNU land, we call this a file name, not a path.
+(defun powershell-langserver-file-name ()
   (car (file-expand-wildcards
         (substitute-in-file-name powershell-default-langserver-path))))
 
