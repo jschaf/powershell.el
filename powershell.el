@@ -1398,11 +1398,8 @@ This insures we get and display the prompt."
 
 (defun powershell--fetch-json-array (url)
   "Fetch JSON from URL, parse as if array."
-  (with-current-buffer (url-retrieve-synchronously url t)
-    (goto-char (point-min))
-    (re-search-forward "\n\n")  ;; Skip headers
-    (let* ((json-array (json-parse-buffer :array-type 'list)))
-      json-array)))
+  (with-temp-buffer (url-insert-file-contents url)
+		    (json-parse-buffer :array-type 'list)))
 
 (defun powershell--unzip-file (zip-file destination)
   "Unzip ZIP-FILE into DESTINATION directory using the 'unzip' shell command."
