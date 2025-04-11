@@ -1435,6 +1435,7 @@ This insures we get and display the prompt."
   (powershell--download-langserver)
   (powershell--register-langserver))
 
+;;;###autoload
 (defun powershell--register-langserver ()
   (defvar eglot-server-programs)
   (let* ((langserver-path (powershell-langserver-file-name))
