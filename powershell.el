@@ -1416,18 +1416,16 @@ This insures we get and display the prompt."
     version))
 
 (defun powershell--download-langserver ()
-  (let* ((powershell-dir (expand-file-name ".cache/powershell" user-emacs-directory))
-         (download-dir  (expand-file-name "dl" powershell-dir))
+  (let* ((download-dir  (expand-file-name "dl" powershell-default-langserver-path))
          (download-file (expand-file-name "powershell-langserver.zip" download-dir)))
-    (make-directory powershell-dir :parents)
     (make-directory download-dir :parents)
     (let* ((version     (powershell--get-latest-release-version))
            (url         (format "https://github.com/PowerShell/PowerShellEditorServices/releases/download/%s/PowerShellEditorServices.zip" version)))
       (url-copy-file url download-file 't)
-      (powershell--unzip-file download-file powershell-dir)
+      (powershell--unzip-file download-file powershell-default-langserver-path)
       (delete-directory download-dir t)
       ;; make our function respond with something more interesting than nil :)
-      (message (format "Powershell LangServer version %s downloaded and unpacked to \'%s\'" version powershell-dir)))))
+      (message (format "Powershell LangServer version %s downloaded and unpacked to \'%s\'" version powershell-default-langserver-path)))))
 
 (defun powershell-install-langserver ()
   "Downloads the lang-server and unpacks it in the default location."
