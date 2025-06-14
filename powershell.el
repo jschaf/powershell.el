@@ -790,7 +790,9 @@ that value is non-nil."
   (powershell-setup-imenu)
   (powershell-setup-speedbar)
   (powershell-setup-menu)
-  (powershell-setup-eldoc))
+  (powershell-setup-eldoc)
+  (with-eval-after-load 'eglot
+    (powershell--register-langserver)))
 
 ;;; PowerShell inferior mode
 
@@ -1433,7 +1435,6 @@ This insures we get and display the prompt."
   (powershell--download-langserver)
   (powershell--register-langserver))
 
-;;;###autoload
 (defun powershell--register-langserver ()
   (defvar eglot-server-programs)
   (let* ((langserver-path (powershell-langserver-file-name))
@@ -1457,10 +1458,6 @@ This insures we get and display the prompt."
 (defun powershell-langserver-file-name ()
   (car (file-expand-wildcards
         (substitute-in-file-name powershell-default-langserver-path))))
-
-;;;###autoload
-(with-eval-after-load 'eglot
-  (powershell--register-langserver))
 
 (provide 'powershell)
 
