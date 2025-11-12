@@ -6,7 +6,7 @@
 
 ;; Author: Frédéric Perrin <frederic (dot) perrin (arobas) resel (dot) fr>
 ;; URL: http://github.com/jschaf/powershell.el
-;; Version: 0.3
+;; Version: 0.4
 ;; Package-Requires: ((emacs "24"))
 ;; Keywords: powershell, languages
 
@@ -90,11 +90,13 @@
   :link '(custom-group-link :tag "Font Lock Faces group" font-lock-faces)
   :group 'languages)
 
-(defcustom powershell-indent 4
+(defcustom powershell-indent-level 4
   "Amount of horizontal space to indent.
 After, for instance, an opening brace"
   :type 'integer
   :group 'powershell)
+
+(define-obsolete-variable-alias 'powershell-indent 'powershell-indent-level "0.4")
 
 (defcustom powershell-continuation-indent 2
   "Amount of horizontal space to indent a continuation line."
@@ -173,7 +175,7 @@ with a backtick or a pipe"
                 ;; bol or another block open on the same line.
                 (if closing-paren       ; this sets the default indent
                     (setq new-indent (current-indentation))
-                  (setq new-indent (+ powershell-indent (current-indentation))))
+                  (setq new-indent (+ powershell-indent-level (current-indentation))))
                 ;; now see if the block is nested on the same line
                 (when (condition-case nil
                           (progn
@@ -184,7 +186,7 @@ with a backtick or a pipe"
                   (skip-syntax-forward " ")
                   (if closing-paren
                       (setq new-indent (current-column))
-                    (setq new-indent (+ powershell-indent (current-column))))))
+                    (setq new-indent (+ powershell-indent-level (current-column))))))
               new-indent)
           (scan-error ;; most likely, we are at the top-level
            0))))))
