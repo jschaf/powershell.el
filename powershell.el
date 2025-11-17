@@ -5,9 +5,10 @@
 ;;               http://www.emacswiki.org/emacs/Rick_Bielawski
 
 ;; Author: Frédéric Perrin <frederic (dot) perrin (arobas) resel (dot) fr>
+;; Maintainer: Juergen Hoetzel <juergen@hoetzel.info>
 ;; URL: http://github.com/jschaf/powershell.el
 ;; Version: 0.4
-;; Package-Requires: ((emacs "24"))
+;; Package-Requires: ((emacs "24.5"))
 ;; Keywords: powershell, languages
 
 ;; This file is NOT part of GNU Emacs.
@@ -90,24 +91,20 @@
   :link '(custom-group-link :tag "Font Lock Faces group" font-lock-faces)
   :group 'languages)
 
+(define-obsolete-variable-alias 'powershell-indent 'powershell-indent-level "0.4")
 (defcustom powershell-indent-level 4
   "Amount of horizontal space to indent.
 After, for instance, an opening brace"
-  :type 'integer
-  :group 'powershell)
-
-(define-obsolete-variable-alias 'powershell-indent 'powershell-indent-level "0.4")
+  :type 'integer)
 
 (defcustom powershell-continuation-indent 2
   "Amount of horizontal space to indent a continuation line."
-  :type 'integer
-  :group 'powershell)
+  :type 'integer)
 
 (defcustom powershell-continued-regexp  ".*\\(|[\\t ]*\\|`\\)$"
   "Regexp matching a continued line.
 Ending either with an explicit backtick, or with a pipe."
-  :type 'integer
-  :group 'powershell)
+  :type 'integer)
 
 ;; Note: There are no explicit references to the variable
 ;; `explicit-powershell.exe-args'.  It is used implicitly by M-x shell
@@ -117,16 +114,14 @@ Ending either with an explicit backtick, or with a pipe."
 (defcustom explicit-powershell.exe-args '("-Command" "-" )
   "Args passed to inferior shell by \\[shell], if the shell is powershell.exe.
 Value is a list of strings, which may be nil."
-  :type '(repeat (string :tag "Argument"))
-  :group 'powershell)
+  :type '(repeat (string :tag "Argument")))
 
 (defcustom powershell-default-langserver-path
   (expand-file-name ".cache/powershell/" user-emacs-directory)
   "Default expression used to locate Powershell Languageserver.
 If found, added to eglot.  Supports environment-variables and glob-pattterns.
 Changes may require an Emacs-restart to take effect."
-  :type 'string
-  :group 'powershell)
+  :type 'string)
 
 
 (defun powershell-continuation-line-p ()
@@ -614,17 +609,15 @@ characters that can't be set by the `syntax-table' alone.")
   "Syntax for PowerShell major mode.")
 
 (defvar powershell-mode-map
-  (let ((powershell-mode-map (make-keymap)))
-    ;;    (define-key powershell-mode-map "\r" 'powershell-indent-line)
-    (define-key powershell-mode-map (kbd "M-\"")
-      'powershell-doublequote-selection)
-    (define-key powershell-mode-map (kbd "M-'") 'powershell-quote-selection)
-    (define-key powershell-mode-map (kbd "C-'") 'powershell-unquote-selection)
-    (define-key powershell-mode-map (kbd "C-\"") 'powershell-unquote-selection)
-    (define-key powershell-mode-map (kbd "M-`") 'powershell-escape-selection)
-    (define-key powershell-mode-map (kbd "C-$")
-      'powershell-dollarparen-selection)
-    powershell-mode-map)
+  (let ((map (make-keymap)))
+    ;; (define-key map "\r" #'powershell-indent-line)
+    (define-key map (kbd "M-\"") #'powershell-doublequote-selection)
+    (define-key map (kbd "M-'")  #'powershell-quote-selection)
+    (define-key map (kbd "C-'")  #'powershell-unquote-selection)
+    (define-key map (kbd "C-\"") #'powershell-unquote-selection)
+    (define-key map (kbd "M-`")  #'powershell-escape-selection)
+    (define-key map (kbd "C-$")  #'powershell-dollarparen-selection)
+    map)
   "Keymap for PS major mode.")
 
 (defun powershell-setup-menu ()
@@ -659,6 +652,12 @@ characters that can't be set by the `syntax-table' alone.")
 ;;; Eldoc support
 
 (defcustom powershell-eldoc-def-files nil
+  ;; FIXME: Maybe the format of the files should be changed
+  ;; to, say, lines of `(powershell-eldoc-set 'FNAME HELPER-STRING)'
+  ;; so that you can easily change the way they're stored by changing
+  ;; the definition of `powershell-eldoc-set', or even just
+  ;; (FNAME HELPER-STRING) so you'd read the file instead of loading them,
+  ;; making it unnecessary to trust them.
   "List of files containing function help strings used by function `eldoc-mode'.
 These are the strings function `eldoc-mode' displays as help for
 functions near point.  The format of the file must be exactly as
@@ -670,28 +669,27 @@ follows or who knows what happens.
 
 Where <fcn-name> is the name of the function to which <helper string> applies.
       <helper-string> is the string to display when point is near <fcn-name>."
-  :type '(repeat string)
-  :group 'powershell)
+  :type '(repeat string))
 
 (defvar powershell-eldoc-obarray ()
-  "Array for file entries by the function `eldoc'.
+  "Obarray for file entries by the function `eldoc'.
 `powershell-eldoc-def-files' entries are added into this array.")
 
 (defun powershell-eldoc-function ()
   "Return a documentation string appropriate for the current context or nil."
   (let ((word (thing-at-point 'symbol)))
-    (if word
-        (eval (intern-soft word powershell-eldoc-obarray)))))
+    (symbol-value (intern-soft word powershell-eldoc-obarray))))
 
 (defun powershell-setup-eldoc ()
   "Load the function documentation for use with eldoc."
-  (when (not (null powershell-eldoc-def-files))
+  (when powershell-eldoc-def-files
     (set (make-local-variable 'eldoc-documentation-function)
-         'powershell-eldoc-function)
-    (unless (vectorp powershell-eldoc-obarray)
-      (setq powershell-eldoc-obarray (make-vector 41 0))
-      (condition-case var (mapc 'load powershell-eldoc-def-files)
+         #'powershell-eldoc-function)
+    (unless powershell-eldoc-obarray
+      (setq powershell-eldoc-obarray (obarray-make 41))
+      (condition-case var (mapc #'load powershell-eldoc-def-files)
         (error (message "*** powershell-setup-eldoc ERROR *** %s" var))))))
+
 ;;; Note: You can create quite a bit of help with these commands:
 ;;
 ;; function Get-Signature ($Cmd) {
@@ -805,13 +803,11 @@ that value is non-nil."
 the newer PowerShell Core (pwsh.exe) does not replace the older Windows
 PowerShell (powershell.exe) when installed, this attempts to find the
 former first, and only if it doesn't exist, falls back to the latter."
-  :group 'powershell
   :type 'string)
 
 (defcustom powershell-log-level 3
   "The current log level for powershell internal operations.
 0 = NONE, 1 = Info, 2 = VERBOSE, 3 = DEBUG."
-  :group 'powershell
   :type 'integer)
 
 (defcustom powershell-squish-results-of-silent-commands t
@@ -820,7 +816,6 @@ of a command in a string.  PowerShell by default, inserts newlines when
 the output exceeds the configured width of the powershell virtual
 window. In some cases callers might want to get the results with the
 newlines and formatting removed. Set this to true, to do that."
-  :group 'powershell
   :type 'boolean)
 
 (defvar powershell-prompt-regex  "PS [^#$%>]+> "
@@ -913,7 +908,7 @@ ignored.  Otherwise, it is printed using `message'.
 TEXT is a format control string, and the remaining arguments ARGS
 are the string substitutions (see `format')."
   (if (<= level powershell-log-level)
-      (let* ((msg (apply 'format text args)))
+      (let* ((msg (apply #'format text args)))
         (message "%s" msg))))
 
 ;; (defun dino-powershell-complete (arg)
@@ -1093,7 +1088,7 @@ See the help for `shell' for more details.  \(Type
           (setq powershell-prompt-regex prompt-string)))
 
     ;; hook the kill-buffer action so we can kill the inferior process?
-    (add-hook 'kill-buffer-hook 'powershell-delete-process)
+    (add-hook 'kill-buffer-hook #'powershell-delete-process nil t)
 
     ;; wrap the comint-input-sender with a PS version
     ;; must do this after launching the shell!
@@ -1103,7 +1098,8 @@ See the help for `shell' for more details.  \(Type
     ;; set a preoutput filter for powershell.  This will trim newlines
     ;; after the prompt.
     (add-hook 'comint-preoutput-filter-functions
-              'powershell-preoutput-filter-for-prompt)
+              #'powershell-preoutput-filter-for-prompt
+              nil t)
 
     ;; send a carriage-return  (get the prompt)
     (comint-send-input)
@@ -1145,16 +1141,14 @@ See the help for `shell' for more details.  \(Type
 ;; The following advice suppresses the call to
 ;; `ansi-color-apply-on-region` when the begin marker points
 ;; nowhere.
-(defadvice ansi-color-apply-on-region (around
-                                       powershell-throttle-ansi-colorizing
-                                       (begin end)
-                                       compile)
-  (progn
-    (let ((start-pos (marker-position begin)))
-    (cond
-     (start-pos
-      (progn
-        ad-do-it))))))
+;;
+;; FIXME: This sounds like a bug that should have been fixed since Emacs-23.
+;; Is it still needed?
+(advice-add 'ansi-color-apply-on-region :around
+            #'powershell--throttle-ansi-colorizing)
+(defun powershell--throttle-ansi-colorizing (orig-fun begin &rest args)
+  (when (marker-position begin)
+    (apply orig-fun begin args)))
 
 (defun powershell--silent-cmd-filter (process result)
 "A process filter that captures output from a shell and stores it
@@ -1232,7 +1226,7 @@ Example:
     (if timeout-seconds
         (setq powershell-command-timeout-seconds timeout-seconds))
 
-    (set-process-filter proc 'powershell--silent-cmd-filter)
+    (set-process-filter proc #'powershell--silent-cmd-filter)
 
     ;; Send the command plus the "prompt" command.  The filter
     ;; will know the command is finished when it sees the command
@@ -1406,7 +1400,7 @@ This insures we get and display the prompt."
 		    (json-parse-buffer :array-type 'list)))
 
 (defun powershell--unzip-file (zip-file destination)
-  "Unzip ZIP-FILE into DESTINATION directory using the 'unzip' command."
+  "Unzip ZIP-FILE into DESTINATION directory using the `unzip' command."
   (make-directory destination t)  ;; Ensure the destination directory exists
   (let ((exit-code (call-process "unzip" nil nil nil "-o" zip-file "-d" destination)))
     (if (zerop exit-code)
