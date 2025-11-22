@@ -1111,45 +1111,6 @@ See the help for `shell' for more details.  \(Type
   ;; return the buffer created
   buffer)
 
-;; +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
-;; Using powershell on emacs23, I get an error:
-;;
-;;    ansi-color-process-output: Marker does not point anywhere
-;;
-;; Here's what's happening.
-;;
-;; In order to be able to read the output from powershell, this shell
-;; starts powershell.exe in "interactive mode", using the -i
-;; option. This which has the curious side-effect of turning off the
-;; prompt in powershell. Normally powershell will return its results,
-;; then emit a prompt to indicate that it is ready for more input.  In
-;; interactive mode it doesn't emit the prompt.  To work around this,
-;; this code (powershell.el) sends an explicit `prompt` command after
-;; sending any user-entered command to powershell. This tells powershell
-;; to explicitly return the prompt, after the results of the prior
-;; command. The prompt then shows up in the powershell buffer.  Lovely.
-;;
-;; But, `ansi-color-apply-on-region` gets called after every command
-;; gets sent to powershell. It gets called with args `(begin end)`,
-;; which are both markers. Turns out the very first time this fn is
-;; called, the position for the begin marker is nil.
-;;
-;; `ansi-color-apply-on-region` calls `(goto-char begin)` (effectively),
-;; and when the position on the marker is nil, the call errors with
-;; "Marker does not point anywhere."
-;;
-;; The following advice suppresses the call to
-;; `ansi-color-apply-on-region` when the begin marker points
-;; nowhere.
-;;
-;; FIXME: This sounds like a bug that should have been fixed since Emacs-23.
-;; Is it still needed?
-(advice-add 'ansi-color-apply-on-region :around
-            #'powershell--throttle-ansi-colorizing)
-(defun powershell--throttle-ansi-colorizing (orig-fun begin &rest args)
-  (when (marker-position begin)
-    (apply orig-fun begin args)))
-
 (defun powershell--silent-cmd-filter (process result)
 "A process filter that captures output from a shell and stores it
 to `powershell-command-reply', rather than allowing the output to
