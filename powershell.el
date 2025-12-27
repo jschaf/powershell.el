@@ -854,7 +854,7 @@ emacs has resized its window.")
   " $mpws_exists = ($rawui | Get-Member | Where-Object"
   " {$_.Name -eq \"MaxPhysicalWindowSize\"});"
   " if ($mpws_exists -eq $null) {"
-  " 210"
+  " 192"
   " } else {"
   " $rawui.MaxPhysicalWindowSize.Width"
   " }"
@@ -954,7 +954,7 @@ in the buffer with name BUFFER-NAME.
 
 In PowerShell 1.0, the maximum WindowSize.Width for
 PowerShell is 210, hardcoded, I believe. In PowerShell 2.0, the max
-windowsize.Width is provided in the RawUI.MaxPhysicalWindowSize
+windowsize.Width is provided in the RawUI.  
 property.
 
 This function does the right thing, and sets the buffer-local
@@ -1193,7 +1193,7 @@ Example:
     ;; will know the command is finished when it sees the command
     ;; prompt.
     ;;
-    (process-send-string proc (concat command "\nprompt\n"))
+    ;; (process-send-string proc (concat command "\nprompt\n"))
 
     (accept-process-output proc powershell-command-timeout-seconds)
 
